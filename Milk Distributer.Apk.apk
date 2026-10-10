@@ -1,0 +1,1372 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Milk Distributor — Business Manager</title>
+<style>
+:root{--bg:#f5f7fb;--card:#fff;--text:#182230;--muted:#667085;--line:#e5e7eb;--primary:#4f46e5;--primary2:#7c3aed;--nav:#101828;--success:#059669;--danger:#dc2626;--shadow:0 10px 28px #10182812}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--text)}button,input,select{font:inherit}.hidden{display:none!important}
+.modal{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.62);display:flex;align-items:flex-start;justify-content:center;padding:14px;overflow:auto;-webkit-overflow-scrolling:touch}
+.modal.hidden{display:none!important}
+.modal-card{background:var(--card,#fff);color:var(--text,#111827);border-radius:20px;box-shadow:0 24px 70px rgba(0,0,0,.28);margin:auto;max-height:calc(100vh - 28px);overflow:auto}
+#analyticsModal .modal-card{padding:16px}
+@media(max-width:700px){#analyticsModal{padding:8px}#analyticsModal .modal-card{width:100%!important;max-width:none!important;border-radius:16px;padding:12px}.grid-2{grid-template-columns:1fr!important}.stats{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+
+.login{min-height:100vh;display:grid;place-items:center;padding:20px;background:radial-gradient(circle at 15% 15%,#818cf8,#312e81 40%,#0f172a 100%)}.login-card{width:min(440px,100%);background:#fff;border-radius:26px;padding:30px;box-shadow:0 30px 80px #0005}.logo{width:68px;height:68px;border-radius:20px;margin:auto;display:grid;place-items:center;background:linear-gradient(135deg,var(--primary),var(--primary2));color:#fff;font-size:30px;font-weight:900}.login-card h1{text-align:center;margin:15px 0 5px}.login-sub{text-align:center;color:var(--muted);margin:0 0 22px}.field{margin:13px 0}.field label{display:block;font-size:13px;font-weight:700;margin-bottom:7px}input,select{width:100%;padding:12px 13px;border:1px solid #d7dce5;border-radius:12px;background:#fff;outline:0}input:focus,select:focus{border-color:var(--primary);box-shadow:0 0 0 4px #4f46e51a}
+.btn{border:0;border-radius:12px;padding:11px 15px;cursor:pointer;font-weight:750;display:inline-flex;align-items:center;justify-content:center;gap:7px;transition:.16s}.btn:hover{transform:translateY(-1px)}.primary{background:linear-gradient(135deg,var(--primary),var(--primary2));color:#fff}.secondary{background:#eef2ff;color:#3730a3}.danger{background:#fee2e2;color:#b91c1c}.ghost{background:transparent;color:var(--muted)}
+.app{min-height:100vh}.side{position:fixed;z-index:10;inset:0 auto 0 0;width:250px;background:linear-gradient(180deg,#0f172a,#111827);color:#fff;padding:20px 14px}.brand{font-size:20px;font-weight:850;padding:5px 10px 8px}.admin-mini{font-size:12px;color:#94a3b8;padding:0 10px 18px;border-bottom:1px solid #ffffff12}.nav{margin-top:12px}.nav button{width:100%;border:0;background:transparent;color:#cbd5e1;padding:12px;border-radius:11px;text-align:left;cursor:pointer;margin:3px 0;font-weight:650}.nav button:hover,.nav button.active{background:#ffffff13;color:#fff}.main{margin-left:250px;padding:25px;max-width:1600px}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}.top h1{margin:0 0 4px;font-size:28px}.top-actions{display:flex;gap:8px}.section{display:none}.section.active{display:block}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:19px;box-shadow:var(--shadow)}.metric-label{font-size:12px;color:var(--muted);font-weight:750}.metric{font-size:27px;font-weight:850;margin-top:7px}.metric-icon{font-size:23px;margin-bottom:8px}.form-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;align-items:end}.form-grid .field{margin:0}.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:13px;margin-top:14px}.table{width:100%;border-collapse:collapse}.table th,.table td{padding:12px 13px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}.table th{font-size:11px;text-transform:uppercase;background:#f8fafc;color:#667085}.empty{text-align:center;color:var(--muted);padding:28px}.pill{display:inline-block;padding:5px 9px;border-radius:999px;font-size:11px;font-weight:800;background:#ecfdf3;color:#047857}.pill.low{background:#fff7ed;color:#c2410c}.pill.out{background:#fef2f2;color:#b91c1c}.section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}.quick{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.toast{position:fixed;right:20px;bottom:20px;background:#111827;color:#fff;padding:13px 16px;border-radius:12px;z-index:100;opacity:0;transform:translateY(10px);transition:.2s}.toast.show{opacity:1;transform:none}
+body.dark{--bg:#0b1120;--card:#111827;--text:#e5e7eb;--muted:#94a3b8;--line:#263244}body.dark .table th{background:#0f172a}body.dark input,body.dark select{background:#0f172a;color:#e5e7eb}
+@media(max-width:950px){.side{width:76px}.brand span,.admin-mini span,.nav span{display:none}.nav button{text-align:center}.main{margin-left:76px}.grid{grid-template-columns:repeat(2,1fr)}.form-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.main{padding:14px}.grid,.form-grid,.quick{grid-template-columns:1fr}.top{align-items:flex-start;gap:12px;flex-direction:column}.top-actions{width:100%}.top-actions .btn{flex:1}}
+
+.business-logo-small{max-width:72px;max-height:72px;object-fit:contain;border-radius:10px;display:block}
+.invoice-business-logo{width:70px!important;height:70px!important;max-width:70px!important;max-height:70px!important;object-fit:contain;border-radius:8px;display:block;margin:auto}.invoice-business-info{min-width:0;line-height:1.35}.invoice-business-info .invoice-title{margin-bottom:2px}.invoice-business-info small{display:block;margin-top:2px;color:#667085}.invoice-head{display:grid!important;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;column-gap:18px}.invoice-brand-row{display:contents}.invoice-brand-row .invoice-business-info{grid-column:1}.invoice-brand-row .invoice-business-logo{grid-column:2;grid-row:1;justify-self:center;align-self:center}.invoice-head .invoice-meta{grid-column:3;grid-row:1;justify-self:end}.invoice-head{min-height:86px}@media(max-width:600px){.invoice-business-logo{width:62px!important;height:62px!important;max-width:62px!important;max-height:62px!important}.invoice-head{column-gap:8px}.invoice-business-info{font-size:11px}.invoice-business-info .invoice-title{font-size:20px}.invoice-head .invoice-meta{font-size:11px}}
+.analytics-highlight{border:1px solid var(--line);border-radius:14px;padding:13px;background:linear-gradient(135deg,#fff,#f8fafc)}
+body.dark .analytics-highlight{background:#0f172a}
+.analytics-management-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.analytics-highlight .label{font-size:11px;color:var(--muted);font-weight:750}
+.analytics-highlight .value{font-size:22px;font-weight:850;margin:4px 0}
+@media(max-width:700px){.analytics-management-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.invoice-preview{background:#fff;color:#111827;border:1px solid #e5e7eb;border-radius:16px;padding:26px;max-width:850px;margin:18px auto;box-shadow:0 8px 30px #00000012}.invoice-head{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;column-gap:18px;border-bottom:2px solid #111827;padding-bottom:18px;min-height:90px}.invoice-brand-row{display:contents}.invoice-brand-row .invoice-business-info{grid-column:1}.invoice-brand-row .invoice-business-logo{grid-column:2;grid-row:1;justify-self:center;align-self:center}.invoice-title{font-size:28px;font-weight:900}.invoice-meta{text-align:right;grid-column:3;grid-row:1;justify-self:end}.invoice-customer{margin:18px 0;padding:14px;background:#f8fafc;border-radius:12px}.invoice-items{width:100%;border-collapse:collapse;margin-top:18px}.invoice-items th,.invoice-items td{padding:10px;border-bottom:1px solid #e5e7eb;text-align:left}.invoice-total{margin-left:auto;width:min(320px,100%);margin-top:15px}.invoice-total div{display:flex;justify-content:space-between;padding:6px}.invoice-total .grand{font-size:18px;font-weight:900;border-top:2px solid #111827;margin-top:5px;padding-top:10px}.invoice-actions{display:flex;gap:9px;justify-content:center;flex-wrap:wrap;margin:15px auto;max-width:850px}.autocomplete{position:relative}.autocomplete-list{position:absolute;left:0;right:0;top:100%;z-index:30;background:#fff;border:1px solid #d7dce5;border-radius:12px;box-shadow:0 12px 30px #0002;max-height:230px;overflow:auto}.autocomplete-item{padding:11px 13px;cursor:pointer;border-bottom:1px solid #eef0f4}.autocomplete-item:hover{background:#eef2ff}.customer-sub{font-size:11px;color:#667085;margin-top:2px}.invoice-item-row{display:grid;grid-template-columns:2fr .8fr 1fr auto;gap:9px;align-items:end;margin-bottom:10px}@media(max-width:600px){.invoice-item-row{grid-template-columns:1fr 1fr}.invoice-item-row .item-name{grid-column:1/-1}}
+
+#invoices.active{display:block!important}
+.autoBox{position:relative}.suggestions{position:absolute;left:0;right:0;top:100%;z-index:60;background:#fff;border:1px solid #d7dce5;border-radius:12px;box-shadow:0 10px 28px #0002;max-height:220px;overflow:auto}.suggestion{padding:10px 12px;cursor:pointer;border-bottom:1px solid #eee}.suggestion:hover{background:#eef2ff}.itemRows{display:flex;flex-direction:column;gap:10px}.itemRow{display:grid;grid-template-columns:2fr .7fr 1fr auto;gap:8px;align-items:end}.itemRow .field{margin:0}@media(max-width:650px){.itemRow{grid-template-columns:1fr 1fr}.itemRow .productWrap{grid-column:1/-1}}
+/* iOS + Android touch reliability */
+button,.btn,.nav button,[role="button"]{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+#analyticsModal{overscroll-behavior:contain}
+#analyticsModal .modal-card{-webkit-overflow-scrolling:touch}
+</style>
+
+<style>
+.upi-qr-box{margin:18px auto 4px;padding:14px;border:1px dashed #cbd5e1;border-radius:14px;text-align:center;background:#f8fafc;max-width:300px}.upi-qr-box h4{margin:0 0 8px}.upi-qr-code{display:flex;justify-content:center;margin:8px auto}.upi-qr-box .upi-id{font-weight:800;font-size:13px;word-break:break-all}.upi-qr-box .upi-note{font-size:11px;color:#667085;margin-top:5px}@page{margin:10mm;}@media print{.upi-qr-box{break-inside:avoid;page-break-inside:avoid;display:block!important}.upi-qr-code{display:flex!important;min-height:220px}.upi-qr-code img{display:block!important;width:220px!important;height:220px!important;max-width:220px!important}}
+</style>
+</head>
+<body onkeydown="if(event.key==='Enter' && document.activeElement.tagName==='INPUT'){event.preventDefault()}">
+<div id="login" class="login"><div class="login-card">
+<div class="logo">R</div><h1>Milk Distributor</h1><p class="login-sub">Milk Wholesale Business Manager</p>
+<div class="field"><label>Login Type</label><select id="loginType"><option value="amangupta">👑 Owner Login</option><option value="worker">👤 Worker Login</option></select></div>
+<div class="field"><label id="loginUserLabel">Owner Username</label><input id="loginUser" placeholder="amangupta"></div>
+<div class="field"><label id="loginPasswordLabel">Owner Password</label><input id="loginPassword" type="password" placeholder="Milk@2026"></div>
+<button class="btn primary" style="width:100%" id="loginBtn">LOGIN</button>
+<button class="btn secondary" style="width:100%;margin-top:8px" id="forgotBtn">🔑 Forgot Password?</button>
+<p id="loginError" style="color:#b91c1c;text-align:center"></p><small>Owner: Aman Kumar Gupta</small>
+</div></div>
+
+<div id="forgotModal" class="login hidden" style="position:fixed;inset:0;z-index:50;background:#0008">
+<div class="login-card"><h2>Reset Owner Password</h2><p style="color:var(--muted)">Owner: Aman Kumar Gupta</p>
+<div class="field"><label>Owner Username</label><input id="resetUser" value="amangupta"></div>
+<div class="field"><label>Recovery Code</label><input id="recoveryCode" type="password"></div>
+<div class="field"><label>New Password</label><input id="newPassword" type="password"></div>
+<div class="field"><label>Confirm Password</label><input id="confirmPassword" type="password"></div>
+<button class="btn primary" style="width:100%" id="resetBtn">RESET PASSWORD</button>
+<button class="btn secondary" style="width:100%;margin-top:8px" id="closeForgot">CANCEL</button>
+<p id="resetMsg"></p></div></div>
+
+<div id="app" class="app hidden"><aside class="side">
+<div class="brand">🛍️ <span>Milk Distributor</span></div><div class="admin-mini"><span>Owner: Aman Kumar Gupta</span></div>
+<div class="nav">
+<button data-page="dashboard" class="active">📊 <span>Dashboard</span></button>
+<button data-page="sales">💰 <span>Sales</span></button>
+<button data-page="purchase">🛒 <span>Purchase</span></button>
+<button data-page="stock">📦 <span>Stock</span></button>
+<button data-page="expense">💸 <span>Expenses</span></button>
+<button data-page="reports">📈 <span>Reports</span></button>
+<button id="workerNav" data-page="workers">👥 <span>Workers</span></button>
+<button id="logoutBtn">🚪 <span>Logout</span></button>
+<button id="invoiceNav" type="button" onclick="openInvoiceSection()">🧾 <span>Invoice</span></button><button id="backupNav" type="button" onclick="openBackupSection()">💾 <span>Backup</span></button><button id="analyticsNav" type="button">📊 <span>Analytics</span></button><button id="settingsNav" type="button" onclick="openSettings()">⚙️ <span>Settings</span></button></div></aside>
+
+<main class="main">
+<div class="top"><div><h1 id="pageTitle">Dashboard</h1><div id="today"></div><div id="roleBadge" style="font-weight:700;margin-top:4px"></div></div>
+<div class="top-actions"><button class="btn secondary" id="themeBtn">🌙 Theme</button></div></div>
+
+<section id="dashboard" class="section active">
+<div class="grid">
+<div class="card"><div class="metric-icon">💰</div><div class="metric-label">TOTAL SALES</div><div class="metric" id="mSales">₹0</div></div>
+<div class="card"><div class="metric-icon">🛒</div><div class="metric-label">TOTAL PURCHASE</div><div class="metric" id="mPurchase">₹0</div></div>
+<div class="card"><div class="metric-icon">💸</div><div class="metric-label">TOTAL EXPENSES</div><div class="metric" id="mExpense">₹0</div></div>
+<div class="card"><div class="metric-icon">📈</div><div class="metric-label">NET PROFIT</div><div class="metric" id="mProfit">₹0</div></div>
+</div>
+<div class="card" style="margin-top:16px"><div class="section-head"><h2>Quick Actions</h2><span class="pill">Ready</span></div><button id="dashboardInvoiceBtn" class="btn primary" type="button" onclick="openInvoiceSection()" style="margin-bottom:12px">🧾 Create Invoice / Bill</button><div class="quick">
+<button class="btn primary" data-page="sales">+ New Sale</button><button class="btn secondary" data-page="purchase">+ Purchase</button><button class="btn secondary" data-page="expense">+ Expense</button>
+</div></div></section>
+
+<section id="sales" class="section"><div class="card"><div class="section-head"><h2>New Sale</h2><span class="pill">Customer + Multi Item</span></div><form id="saleForm"><div class="form-grid"><div class="field autoBox"><label>Customer Search (Name / Mobile)</label><input id="saleCustomerSearch" autocomplete="off" placeholder="Name ya mobile search" oninput="rrContactSuggest(this,'rrCustomers','saleCustomerSuggestions')"><div id="saleCustomerSuggestions" class="suggestions hidden"></div></div><div class="field"><label>Customer Name</label><input id="saleCustomerName"></div><div class="field"><label>Mobile Number</label><input id="saleCustomerPhone" inputmode="tel"></div><div class="field"><label>Address / Contact</label><input id="saleCustomerAddress"></div><div class="field"><label>Payment Method</label><select id="salePayment"><option>Cash</option><option>UPI</option><option>Credit</option><option>Due</option></select></div></div><div class="card" style="margin-top:12px;background:#f8fafc"><div class="section-head"><h3 style="margin:0">Sale Items</h3><button class="btn secondary" type="button" onclick="rrAddSaleItem()">＋ Add Item</button></div><div id="saleItems" class="itemRows"></div><div id="saleTotal" style="text-align:right;font-weight:800;margin-top:10px">Total: ₹0.00</div></div><div class="small-muted" style="margin-top:10px">💳 Payment: Cash / UPI / Credit / Due</div><button class="btn primary" type="submit" style="margin-top:12px">Save Sale</button></form></div><div class="card" style="margin-top:16px"><h2>Sales History</h2><div id="salesTable"></div></div></section>
+
+<section id="purchase" class="section"><div class="card"><h2>New Purchase</h2><form id="purchaseForm"><div class="form-grid"><div class="field autoBox"><label>Supplier Search (Name / Mobile)</label><input id="purchaseSupplierSearch" autocomplete="off" placeholder="Supplier name ya mobile" oninput="rrContactSuggest(this,'rrSuppliers','purchaseSupplierSuggestions')"><div id="purchaseSupplierSuggestions" class="suggestions hidden"></div></div><div class="field"><label>Supplier Name</label><input id="purchaseSupplierName"></div><div class="field"><label>Supplier Mobile</label><input id="purchaseSupplierPhone" inputmode="tel"></div><div class="field"><label>Supplier Address / Contact</label><input id="purchaseSupplierAddress"></div><div class="field"><label>Payment Method</label><select id="purchasePayment"><option>Cash</option><option>UPI</option><option>Credit</option><option>Due</option></select></div></div><div class="card" style="margin-top:12px;background:#f8fafc"><div class="section-head"><h3 style="margin:0">Purchase Items</h3><button class="btn secondary" type="button" onclick="rrAddPurchaseItem()">＋ Add Item</button></div><div id="purchaseItems" class="itemRows"></div><div id="purchaseTotal" style="text-align:right;font-weight:800;margin-top:10px">Total: ₹0.00</div></div><div class="small-muted" style="margin-top:10px">💳 Payment: Cash / UPI / Credit / Due</div><button class="btn primary" type="submit" style="margin-top:12px">Save Purchase</button></form></div><div class="card" style="margin-top:16px"><h2>Purchase History</h2><div id="purchaseTable"></div></div></section>
+
+<section id="stock" class="section"><div class="card"><h2>Inventory / Stock</h2><div id="stockTable"></div></div></section>
+
+<section id="expense" class="section"><div class="card"><h2>New Expense</h2><form id="expenseForm" class="form-grid">
+<div class="field"><label>Expense Title</label><input id="expenseTitle" required></div><div class="field"><label>Amount ₹</label><input id="expenseAmount" type="number" min=".01" step=".01" required></div>
+<button class="btn primary">Save Expense</button></form></div><div class="card" style="margin-top:16px"><h2>Expense History</h2><div id="expenseTable"></div></div></section>
+
+<section id="workers" class="section"><div class="card"><h2>Worker Management</h2><p style="color:var(--muted)">Only Admin can add or remove workers.</p><form id="workerForm" class="form-grid">
+<div class="field"><label>Worker Name</label><input id="workerName" required></div><div class="field"><label>Worker Username</label><input id="workerUsername" required></div><div class="field"><label>Worker Password</label><input id="workerPassword" type="password" minlength="6" required></div>
+<button class="btn primary">+ Add Worker</button></form><div id="workersTable" style="margin-top:15px"></div></div></section>
+
+
+<section id="invoices" class="section">
+<div class="card">
+  <div class="section-head"><h2>Create Invoice</h2><span class="pill">GST-ready layout</span></div>
+  <form onsubmit="createInvoice(event)">
+    <div class="form-grid">
+      <div class="field autocomplete"><label>Search Customer (Name / Mobile)</label><input id="invCustomerSearch" autocomplete="off" oninput="customerSearch()" placeholder="Naam ya mobile number search karein"><div id="customerSuggestions" class="autocomplete-list hidden"></div></div>
+      <div class="field"><label>Customer Name</label><input id="invCustomerName" required placeholder="Kharidar ka naam"></div>
+      <div class="field"><label>Mobile Number</label><input id="invCustomerPhone" required inputmode="tel" placeholder="10 digit mobile number"></div>
+    </div>
+    <div class="form-grid">
+      <div class="field"><label>Invoice Number</label><input id="invNumber" required></div>
+      <div class="field" style="grid-column:span 2"><label>Customer Address</label><input id="invCustomerAddress" placeholder="Full address"></div>
+    </div>
+    <div class="card" style="margin-top:14px;background:#f8fafc"><div class="section-head"><h3 style="margin:0">Invoice Items</h3><button class="btn secondary" type="button" onclick="addInvoiceItemRow()">＋ Add Item</button></div><div id="invoiceItemsBuilder"></div><div id="invoiceItemsTotal" style="text-align:right;font-weight:800;margin-top:10px">Subtotal: ₹0.00</div></div>
+    <div class="form-grid">
+      <div class="field"><label>Discount ₹</label><input id="invDiscount" type="number" min="0" step="0.01" value="0"></div>
+      <div class="field"><label>Payment Method</label><select id="invPayment"><option>Cash</option><option>UPI</option><option>Card</option><option>Bank Transfer</option><option>Credit</option><option>Due</option></select></div><div id="invoicePaymentQrPreview" style="grid-column:1/-1"></div>
+      <div class="field"><label>Notes</label><input id="invNotes" placeholder="Optional note"></div>
+    </div>
+    <div class="actions" style="margin-top:15px">
+      <button class="btn primary" type="submit">🧾 Generate Invoice</button>
+      <button class="btn secondary" type="button" onclick="clearInvoiceForm()">Clear</button>
+    </div>
+  </form>
+</div>
+<div class="card" style="margin-top:18px">
+  <div class="section-head"><h2>Invoice History</h2><span id="invoiceCount" class="pill">0</span></div>
+  <div id="invoiceTable"></div>
+</div>
+</section>
+
+
+<section id="backup" class="section">
+  <div class="card">
+    <div class="section-head"><h2>💾 Data Backup & Restore</h2><span class="pill">Local Backup</span></div>
+    <p class="muted">Apne sales, purchase, stock, expenses, workers aur invoices ka complete backup file save karein.</p>
+    <div class="actions" style="margin-top:16px">
+      <button class="btn primary" type="button" onclick="saveNow()">💾 Save Data Now</button>
+      <button class="btn primary" type="button" onclick="downloadBackup()">⬇️ Download Backup</button>
+      <button class="btn secondary" type="button" onclick="document.getElementById('restoreFile').click()">⬆️ Restore Backup</button>
+      <input id="restoreFile" type="file" accept=".json,application/json" hidden onchange="restoreBackup(event)">
+    </div>
+    <div class="card" style="margin-top:16px;background:#f8fafc">
+      <b>Backup information</b>
+      <p id="backupInfo" class="muted" style="margin-bottom:0">Ready</p>
+    </div>
+    <div class="card" style="margin-top:16px;border:1px solid #c7d2fe;background:linear-gradient(135deg,#eef2ff,#faf5ff)">
+      <div class="section-head"><div><h3 style="margin:0">☁️ Google Cloud Sync</h3><div id="cloudSyncStatus" class="small-muted">Not connected</div></div><span id="cloudUserBadge" class="pill">Offline</span></div>
+      <p class="muted">Google account se connect karne ke baad business data cloud me save hoga aur same Google account se dusre Android, iPhone ya PC par bhi sync hoga.</p>
+      <div class="actions">
+        <button class="btn primary" id="googleConnectBtn" type="button">🔐 Connect Google Account</button>
+        <button class="btn secondary" id="cloudSyncNowBtn" type="button">☁️ Sync Now</button>
+        <button class="btn danger hidden" id="googleDisconnectBtn" type="button">Disconnect</button>
+      </div>
+      <small class="muted">Security: app/admin/worker passwords cloud me upload nahi kiye jayenge.</small>
+    </div>
+  </div>
+</section>
+
+<section id="settings" class="section">
+  <div class="section-head"><div><h2>⚙️ Business Settings</h2><div class="small-muted">Owner login, business identity and invoice branding</div></div><span class="pill">Owner Only</span></div>
+  <div class="grid-2">
+    <div class="card">
+      <h3>👤 Owner Login Settings</h3>
+      <p class="small-muted">Change the owner username and password. Enter the current password for security.</p>
+      <div class="field"><label>Current Password</label><input id="setCurrentPassword" type="password" autocomplete="current-password"></div>
+      <div class="field"><label>New Owner Username</label><input id="setOwnerUsername" placeholder="Enter new username"></div>
+      <div class="field"><label>New Password</label><input id="setOwnerPassword" type="password" placeholder="Leave blank to keep current password"></div>
+      <div class="field"><label>Confirm New Password</label><input id="setOwnerPassword2" type="password"></div>
+      <button class="btn primary" type="button" onclick="changeOwnerCredentials()">💾 Save Owner Login</button>
+    </div>
+    <div class="card">
+      <h3>🏪 Business Logo</h3>
+      <p class="small-muted">Upload your logo once. It is saved on this device and shown automatically on invoices.</p>
+      <div id="logoSettingsPreview" style="min-height:110px;border:1px dashed #cbd5e1;border-radius:14px;display:grid;place-items:center;margin:12px 0;padding:10px"><span class="small-muted">No logo uploaded</span></div>
+      <input id="businessLogoInput" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml">
+      <div class="actions" style="margin-top:10px">
+        <button class="btn primary" type="button" onclick="saveBusinessLogo()">⬆️ Save Logo</button>
+        <button class="btn danger" type="button" onclick="removeBusinessLogo()">🗑️ Remove Logo</button>
+      </div>
+      <div id="logoSettingsMsg" class="small-muted" style="margin-top:8px"></div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:14px">
+    <h3>📋 Current Business Identity</h3>
+    <div class="grid">
+      <div><div class="metric-label">BUSINESS</div><b>Milk Distributor</b></div>
+      <div><div class="metric-label">OWNER</div><b>Aman Kumar Gupta</b></div>
+      <div><div class="metric-label">BUSINESS TYPE</div><b>Milk Wholesale</b></div>
+      <div><div class="metric-label">MOBILE / UPI</div><b>8210700877</b><br><span class="small-muted">amanguptacric1998@oksbi</span></div>
+    </div>
+  </div>
+</section>
+<section id="reports" class="section"><div class="card"><h2>Business Summary</h2><div id="reportSummary"></div><div class="actions" style="margin-top:16px"><button class="btn secondary" id="exportBtn">⬇ Export Backup</button><button class="btn danger" id="clearBtn">Delete All Data</button></div></div></section>
+</main></div>
+<div id="toast" class="toast"></div>
+
+
+<script>
+/* ---------- Milk Distributor persistent data layer ---------- */
+const RR_STORAGE_KEY='milk_distributor_app_data_v3';
+function rrDefaultData(){
+  return {
+    sales:[], purchases:[], expenses:[],
+    stock:{},
+    customers:[],
+    settings:{}
+  };
+}
+function rrLoadData(){
+  try{
+    const raw=localStorage.getItem(RR_STORAGE_KEY);
+    if(raw){
+      const x=JSON.parse(raw);
+      return Object.assign(rrDefaultData(),x||{});
+    }
+  }catch(e){}
+  /* migrate old data object if it exists */
+  try{
+    const old=localStorage.getItem('rr_data');
+    if(old){
+      const x=JSON.parse(old);
+      const d=Object.assign(rrDefaultData(),x||{});
+      localStorage.setItem(RR_STORAGE_KEY,JSON.stringify(d));
+      return d;
+    }
+  }catch(e){}
+  return rrDefaultData();
+}
+function rrSaveData(){
+  try{
+    localStorage.setItem(RR_STORAGE_KEY,JSON.stringify(data));
+    localStorage.setItem('rr_data',JSON.stringify(data)); // backward compatibility
+    return true;
+  }catch(e){
+    toast('Storage full: backup your data');
+    return false;
+  }
+}
+function save(){
+  rrSaveData();
+  if(typeof render==='function') render();
+  // Every business-data change is queued for cloud sync when Google is connected.
+  if(window.rrCloudSync) window.rrCloudSync();
+}
+function rrSafeRender(){
+  try{ if(typeof render==='function') render(); }catch(e){}
+}
+var data=rrLoadData();
+
+const $=id=>document.getElementById(id);
+const money=n=>new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR'}).format(Number(n)||0);
+const now=()=>new Date().toLocaleString('en-IN');
+const DATA_KEY='milk_distributor_data_v3', WORKER_KEY='rr_workers_v3', CREDS_KEY='rr_admin_credentials_v3';
+// Use the persistent data object loaded above; do not redeclare `data`.
+
+function adminCreds(){return JSON.parse(localStorage.getItem(CREDS_KEY)||'{"username":"amangupta","password":"Milk@2026"}')}
+function workers(){return JSON.parse(localStorage.getItem(WORKER_KEY)||'[]')}
+function save(){rrSaveData();rrSafeRender();if(window.rrCloudSync)window.rrCloudSync()}
+function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(window.tt);window.tt=setTimeout(()=>t.classList.remove('show'),1800)}
+function role(){return localStorage.getItem('rr_role')||'admin'}
+function go(page,btn){
+ if(page==='workers'&&role()!=='admin'){toast('Only Admin can manage workers');return}
+ document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+ const target=$(page);if(target)target.classList.add('active');
+ document.querySelectorAll('.nav button[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===page));
+ $('pageTitle').textContent=page.charAt(0).toUpperCase()+page.slice(1);
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+function setupRole(){
+ const isAdmin=role()==='admin';$('workerNav').classList.toggle('hidden',!isAdmin);
+ $('roleBadge').textContent=isAdmin?'👑 Owner: Aman Kumar Gupta':'👤 Worker: '+(localStorage.getItem('rr_worker_name')||'Worker');
+}
+function login(){
+ const type=$('loginType').value,u=$('loginUser').value.trim(),p=$('loginPassword').value;
+ if(type==='amangupta'){
+   const c=adminCreds();
+   if(u===c.username&&p===c.password){localStorage.setItem('rr_logged','1');localStorage.setItem('rr_role','admin');$('login').classList.add('hidden');$('app').classList.remove('hidden');$('loginError').textContent='';setupRole();render();toast('Admin login successful')}
+   else $('loginError').textContent='Admin username or password is incorrect.';
+ }else{
+   const w=workers().find(x=>x.username===u&&x.password===p);
+   if(w){localStorage.setItem('rr_logged','1');localStorage.setItem('rr_role','worker');localStorage.setItem('rr_worker_name',w.name);$('login').classList.add('hidden');$('app').classList.remove('hidden');$('loginError').textContent='';setupRole();render();toast('Worker login successful')}
+   else $('loginError').textContent='Worker username or password is incorrect.';
+ }
+}
+function logout(){localStorage.removeItem('rr_logged');localStorage.removeItem('rr_role');localStorage.removeItem('rr_worker_name');location.reload()}
+function rrProducts(){return JSON.parse(localStorage.getItem('rr_products')||'[]')}
+function rrSaveProducts(a){localStorage.setItem('rr_products',JSON.stringify(a))}
+function rrRememberProduct(n,price){n=(n||'').trim();if(!n)return;let a=rrProducts().filter(x=>x.name.toLowerCase()!==n.toLowerCase());a.unshift({name:n,price:+price||0});rrSaveProducts(a.slice(0,2000))}
+function rrContacts(k){return JSON.parse(localStorage.getItem(k)||'[]')}
+function rrRememberContact(k,c){if(!c.name&&!c.phone)return;let a=rrContacts(k).filter(x=>(x.phone||'')!==(c.phone||'')&&(x.name||'').toLowerCase()!==(c.name||'').toLowerCase());a.unshift(c);localStorage.setItem(k,JSON.stringify(a.slice(0,2000)))}
+function rrContactSuggest(inp,k,bid){let q=(inp.value||'').toLowerCase().trim(),b=$(bid);if(!q){b.innerHTML='';b.classList.add('hidden');return}let a=rrContacts(k).filter(x=>(x.name||'').toLowerCase().includes(q)||(x.phone||'').includes(q)).slice(0,12);b.innerHTML=a.map((x,i)=>`<div class="suggestion" onclick="rrPickContact('${k}','${bid}',${i})"><b>${safeText(x.name||'')}</b><div class="small-muted">${safeText(x.phone||'')} ${x.address?'• '+safeText(x.address):''}</div></div>`).join('');b.classList.toggle('hidden',!a.length)}
+function rrPickContact(k,bid,i){let c=rrContacts(k)[i];if(k==='rrCustomers'){saleCustomerSearch.value=c.name||c.phone||'';saleCustomerName.value=c.name||'';saleCustomerPhone.value=c.phone||'';saleCustomerAddress.value=c.address||''}else{purchaseSupplierSearch.value=c.name||c.phone||'';purchaseSupplierName.value=c.name||'';purchaseSupplierPhone.value=c.phone||'';purchaseSupplierAddress.value=c.address||''}$(bid).classList.add('hidden')}
+function rrProductSuggest(inp,bid){let q=(inp.value||'').toLowerCase().trim(),b=$(bid);if(!q){b.innerHTML='';b.classList.add('hidden');return}let a=rrProducts().filter(x=>x.name.toLowerCase().includes(q)).slice(0,12);b.innerHTML=a.map(x=>`<div class="suggestion" onclick="rrPickProduct(this)"><b>${safeText(x.name)}</b><div class="small-muted">${money(x.price||0)}</div></div>`).join('');b.classList.toggle('hidden',!a.length)}
+function rrPickProduct(el){let r=el.closest('.autoBox'),name=el.querySelector('b').textContent;r.querySelector('input').value=name;el.parentElement.classList.add('hidden');let row=r.closest('.itemRow'),p=rrProducts().find(x=>x.name.toLowerCase()===name.toLowerCase());if(row&&p)row.querySelector('.item-price').value=p.price||''}
+function rrItemRow(kind){let r=document.createElement('div'),bid=kind+Date.now()+Math.random().toString(16).slice(2);r.className='itemRow';r.innerHTML=`<div class="field autoBox productWrap"><label>Product / Item Search</label><input class="item-product" required autocomplete="off" placeholder="Product name" oninput="rrProductSuggest(this,'${bid}')"><div id="${bid}" class="suggestions hidden"></div></div><div class="field"><label>Qty</label><input class="item-qty" type="number" min=".01" step=".01" value="1" required></div><div class="field"><label>Price ₹</label><input class="item-price" type="number" min="0" step=".01" required></div><button type="button" class="btn danger" onclick="this.parentElement.remove();rrRecalc('${kind}')">Remove</button>`;return r}
+function rrAddSaleItem(){let r=rrItemRow('sale');saleItems.appendChild(r);r.querySelectorAll('input').forEach(x=>x.addEventListener('input',()=>rrRecalc('sale')))}
+function rrAddPurchaseItem(){let r=rrItemRow('purchase');purchaseItems.appendChild(r);r.querySelectorAll('input').forEach(x=>x.addEventListener('input',()=>rrRecalc('purchase')))}
+function rrReadItems(id){return [...$(id).querySelectorAll('.itemRow')].map(r=>({product:r.querySelector('.item-product').value.trim(),qty:+r.querySelector('.item-qty').value,price:+r.querySelector('.item-price').value})).filter(x=>x.product&&x.qty>0&&x.price>=0)}
+function rrRecalc(k){let a=rrReadItems(k==='sale'?'saleItems':'purchaseItems'),t=a.reduce((s,x)=>s+x.qty*x.price,0);$(k==='sale'?'saleTotal':'purchaseTotal').textContent='Total: '+money(t)}
+function rrInitTransactionRows(){if($('saleItems')&&!$('saleItems').children.length)rrAddSaleItem();if($('purchaseItems')&&!$('purchaseItems').children.length)rrAddPurchaseItem()}
+function addSale(e){e.preventDefault();let items=rrReadItems('saleItems');if(!items.length){toast('Add at least one item');return}const payment=$('salePayment')?.value||'Cash';items.forEach(x=>{data.sales.push({...x,date:now(),customer:saleCustomerName.value.trim(),phone:saleCustomerPhone.value.trim(),address:saleCustomerAddress.value.trim(),payment});data.stock[x.product]=(data.stock[x.product]||0)-x.qty;rrRememberProduct(x.product,x.price)});rrRememberContact('rrCustomers',{name:saleCustomerName.value.trim(),phone:saleCustomerPhone.value.trim(),address:saleCustomerAddress.value.trim()});e.target.reset();saleItems.innerHTML='';rrAddSaleItem();rrRecalc('sale');save();toast('Sale saved successfully')}
+function addPurchase(e){e.preventDefault();let items=rrReadItems('purchaseItems');if(!items.length){toast('Add at least one item');return}const payment=$('purchasePayment')?.value||'Cash';items.forEach(x=>{data.purchases.push({...x,date:now(),supplier:purchaseSupplierName.value.trim(),phone:purchaseSupplierPhone.value.trim(),address:purchaseSupplierAddress.value.trim(),payment});data.stock[x.product]=(data.stock[x.product]||0)+x.qty;rrRememberProduct(x.product,x.price)});rrRememberContact('rrSuppliers',{name:purchaseSupplierName.value.trim(),phone:purchaseSupplierPhone.value.trim(),address:purchaseSupplierAddress.value.trim()});e.target.reset();purchaseItems.innerHTML='';rrAddPurchaseItem();rrRecalc('purchase');save();toast('Purchase saved successfully')}
+function addExpense(e){e.preventDefault();data.expenses.push({title:$('expenseTitle').value.trim(),amount:+$('expenseAmount').value,date:now()});e.target.reset();save();toast('Expense saved successfully')}
+function addWorker(e){e.preventDefault();if(role()!=='admin')return toast('Only Admin can add workers');const name=$('workerName').value.trim(),u=$('workerUsername').value.trim(),p=$('workerPassword').value;if(workers().some(w=>w.username===u)||u===adminCreds().username)return toast('Username already exists');const w=workers();w.push({id:Date.now(),name,username:u,password:p});localStorage.setItem(WORKER_KEY,JSON.stringify(w));e.target.reset();render();if(window.rrCloudSync)window.rrCloudSync();toast('Worker added successfully')}
+function removeWorker(id){if(role()!=='admin')return;if(confirm('Remove this worker?')){localStorage.setItem(WORKER_KEY,JSON.stringify(workers().filter(w=>w.id!==id)));render();if(window.rrCloudSync)window.rrCloudSync();toast('Worker removed')}}
+
+function editSale(i){
+  const x=data.sales[i]; if(!x)return;
+  const oldProduct=x.product,oldQty=Number(x.qty||0);
+  const product=prompt('Product:',x.product); if(product===null)return;
+  const qty=Number(prompt('Quantity:',x.qty)); if(!Number.isFinite(qty)||qty<=0)return alert('Invalid quantity');
+  const price=Number(prompt('Price / Unit:',x.price)); if(!Number.isFinite(price)||price<0)return alert('Invalid price');
+  const payment=prompt('Payment: Cash / UPI / Credit / Due',x.payment||'Cash'); if(payment===null)return;
+  data.stock[oldProduct]=(data.stock[oldProduct]||0)+oldQty;
+  x.product=product.trim(); x.qty=qty; x.price=price; x.payment=payment.trim()||'Cash';
+  data.stock[x.product]=(data.stock[x.product]||0)-qty;
+  save(); toast('Sale updated');
+}
+function removeSale(i){
+  if(!confirm('Remove this sale?'))return;
+  const x=data.sales[i];
+  if(x){ data.stock[x.product]=(data.stock[x.product]||0)+Number(x.qty||0); }
+  data.sales.splice(i,1); save(); toast('Sale removed');
+}
+function editPurchase(i){
+  const x=data.purchases[i]; if(!x)return;
+  const product=prompt('Product:',x.product); if(product===null)return;
+  const qty=Number(prompt('Quantity:',x.qty)); if(!Number.isFinite(qty)||qty<0)return alert('Invalid quantity');
+  const price=Number(prompt('Cost / Unit:',x.price)); if(!Number.isFinite(price)||price<0)return alert('Invalid cost');
+  const payment=prompt('Payment: Cash / UPI / Credit / Due',x.payment||'Cash'); if(payment===null)return;
+  const oldProduct=x.product, oldQty=Number(x.qty||0);
+  data.stock[oldProduct]=(data.stock[oldProduct]||0)-oldQty;
+  x.product=product.trim(); x.qty=qty; x.price=price; x.payment=payment.trim()||'Cash';
+  data.stock[x.product]=(data.stock[x.product]||0)+qty;
+  save(); toast('Purchase updated');
+}
+function removePurchase(i){
+  if(!confirm('Remove this purchase?'))return;
+  const x=data.purchases[i];
+  if(x)data.stock[x.product]=(data.stock[x.product]||0)-Number(x.qty||0);
+  data.purchases.splice(i,1); save(); toast('Purchase removed');
+}
+function editExpense(i){
+  const x=data.expenses[i]; if(!x)return;
+  const title=prompt('Expense title:',x.title); if(title===null)return;
+  const amount=Number(prompt('Amount:',x.amount)); if(!Number.isFinite(amount)||amount<0)return alert('Invalid amount');
+  x.title=title.trim(); x.amount=amount; save(); toast('Expense updated');
+}
+function removeExpense(i){
+  if(!confirm('Remove this expense?'))return;
+  data.expenses.splice(i,1); save(); toast('Expense removed');
+}
+function editStock(product){
+  const newQty=Number(prompt('Set current stock for '+product+':',data.stock[product]||0));
+  if(!Number.isFinite(newQty)||newQty<0)return alert('Invalid stock');
+  data.stock[product]=newQty; save(); toast('Stock updated');
+}
+function removeStock(product){
+  if(!confirm('Remove stock for '+product+'?'))return;
+  delete data.stock[product]; save(); toast('Stock removed');
+}
+function removeInvoice(id){
+  const list=getInvoices(), idx=list.findIndex(x=>x.id===id); if(idx<0)return;
+  if(!confirm('Remove this invoice?'))return;
+  list.splice(idx,1); setInvoices(list); renderInvoices(); toast('Invoice removed');
+}
+let editingInvoiceId=null;
+function editInvoice(id){
+  const inv=invoiceById(id); if(!inv)return;
+  editingInvoiceId=id;
+  openInvoiceSection();
+  $('invCustomerSearch').value=inv.customer||inv.phone||'';
+  $('invCustomerName').value=inv.customer||'';
+  $('invCustomerPhone').value=inv.phone||'';
+  $('invCustomerAddress').value=inv.address||'';
+  $('invNumber').value=inv.number||'';
+  $('invDiscount').value=Number(inv.discount||0);
+  $('invPayment').value=inv.payment||'Cash';
+  $('invNotes').value=inv.notes||'';
+  $('invoiceItemsBuilder').innerHTML='';
+  (inv.items&&inv.items.length?inv.items:[{product:inv.product||'',qty:inv.qty||1,price:inv.price||0}]).forEach(it=>addInvoiceItemRow(it));
+  updateInvoiceItemsTotal();
+  const submit=document.querySelector('#invoices form button[type="submit"]');
+  if(submit)submit.textContent='💾 Update Full Invoice';
+  const title=document.querySelector('#invoices h2');
+  if(title)title.textContent='✏️ Edit Full Invoice';
+  $('invoices').scrollIntoView({behavior:'smooth',block:'start'});
+  toast('Full invoice loaded for editing');
+}
+function finishInvoiceEdit(){
+  editingInvoiceId=null;
+  const submit=document.querySelector('#invoices form button[type="submit"]');
+  if(submit)submit.textContent='🧾 Generate Invoice';
+  const title=document.querySelector('#invoices h2');
+  if(title)title.textContent='Create Invoice';
+}
+
+function safeText(v){
+  return String(v==null?'':v).replace(/[&<>"']/g, function(ch){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch];
+  });
+}
+
+function table(head,rows){if(!rows.length)return '<div class="empty">No records found.</div>';return '<div class="table-wrap"><table class="table"><thead><tr>'+head.map(x=>'<th>'+x+'</th>').join('')+'</tr></thead><tbody>'+rows.map(r=>'<tr>'+r.map(x=>'<td>'+x+'</td>').join('')+'</tr>').join('')+'</tbody></table></div>'}
+
+function getInvoices(){return JSON.parse(localStorage.getItem('rr_invoices')||'[]')}
+function setInvoices(v){localStorage.setItem('rr_invoices',JSON.stringify(v));if(window.rrCloudSync)window.rrCloudSync()}
+function nextInvoiceNumber(){
+  const n=getInvoices().length+1;
+  return 'RR-'+new Date().getFullYear()+'-'+String(n).padStart(4,'0');
+}
+function getCustomers(){const a=JSON.parse(localStorage.getItem('rr_customers')||'[]'),inv=getInvoices(),m={};a.concat(inv.map(x=>({name:x.customer,phone:x.phone,address:x.address||''}))).forEach(c=>{const n=(c.name||'').trim(),p=(c.phone||'').trim();if(n||p)m[(p||n).toLowerCase()]={name:n,phone:p,address:c.address||''}});return Object.values(m)}
+function saveCustomer(c){if(!c.name&&!c.phone)return;const a=getCustomers().filter(x=>x.phone!==c.phone&&(x.name||'').toLowerCase()!==(c.name||'').toLowerCase());a.unshift(c);localStorage.setItem('rr_customers',JSON.stringify(a.slice(0,1000)));if(window.rrCloudSync)window.rrCloudSync()}
+function customerSearch(){const q=($('invCustomerSearch').value||'').trim().toLowerCase(),box=$('customerSuggestions');if(!q){box.innerHTML='';box.classList.add('hidden');return}const a=getCustomers().filter(c=>(c.name||'').toLowerCase().includes(q)||(c.phone||'').includes(q)).slice(0,10);box.innerHTML=a.map((c,i)=>`<div class="autocomplete-item" data-i="${i}"><b>${safeText(c.name||'Unnamed')}</b><div class="customer-sub">${safeText(c.phone||'')} ${c.address?'• '+safeText(c.address):''}</div></div>`).join('');box.classList.toggle('hidden',!a.length);box.querySelectorAll('[data-i]').forEach((el,i)=>el.onclick=()=>selectCustomer(a[i]))}
+function selectCustomer(c){$('invCustomerSearch').value=c.name||c.phone||'';$('invCustomerName').value=c.name||'';$('invCustomerPhone').value=c.phone||'';$('invCustomerAddress').value=c.address||'';$('customerSuggestions').classList.add('hidden')}
+function addInvoiceItemRow(item={product:'',qty:1,price:''}){const w=$('invoiceItemsBuilder'),r=document.createElement('div');r.className='invoice-item-row';r.innerHTML=`<div class="field item-name"><label>Product / Item</label><input class="inv-item-product" value="${safeText(item.product)}" placeholder="Product name" required></div><div class="field"><label>Qty</label><input class="inv-item-qty" type="number" min="0.01" step="0.01" value="${item.qty||1}" required></div><div class="field"><label>Price / Unit ₹</label><input class="inv-item-price" type="number" min="0" step="0.01" value="${item.price??''}" required></div><button class="btn danger" type="button" onclick="this.parentElement.remove();updateInvoiceItemsTotal()">Remove</button>`;w.appendChild(r);r.querySelectorAll('input').forEach(x=>x.addEventListener('input',updateInvoiceItemsTotal))}
+function readInvoiceItems(){return [...document.querySelectorAll('.invoice-item-row')].map(r=>({product:r.querySelector('.inv-item-product').value.trim(),qty:Number(r.querySelector('.inv-item-qty').value),price:Number(r.querySelector('.inv-item-price').value)})).filter(x=>x.product&&x.qty>0&&x.price>=0)}
+function updateInvoiceItemsTotal(){const s=readInvoiceItems().reduce((a,x)=>a+x.qty*x.price,0);$('invoiceItemsTotal').textContent='Subtotal: '+money(s);if(typeof rrRenderPaymentQr==='function')rrRenderPaymentQr()}
+function clearInvoiceForm(){finishInvoiceEdit();$('invCustomerSearch').value='';$('invCustomerName').value='';$('invCustomerPhone').value='';$('invCustomerAddress').value='';$('invNumber').value=nextInvoiceNumber();$('invDiscount').value=0;$('invPayment').value='Cash';$('invNotes').value='';$('invoiceItemsBuilder').innerHTML='';addInvoiceItemRow();updateInvoiceItemsTotal();if($('invPayment'))$('invPayment').onchange=rrRenderPaymentQr;if($('invDiscount'))$('invDiscount').oninput=rrRenderPaymentQr}
+function createInvoice(e){
+ e.preventDefault();
+ const phone=invCustomerPhone.value.replace(/\D/g,'');
+ if(phone.length<10){toast('Please enter a valid mobile number');return}
+ const items=readInvoiceItems(); if(!items.length){toast('Please add at least one item');return}
+ const discount=Number(invDiscount.value)||0, subtotal=items.reduce((a,x)=>a+x.qty*x.price,0), total=Math.max(0,subtotal-discount);
+ const list=getInvoices();
+ if(editingInvoiceId!==null){
+   const idx=list.findIndex(x=>x.id===editingInvoiceId); if(idx<0){finishInvoiceEdit();return}
+   const old=list[idx];
+   const oldItems=old.items&&old.items.length?old.items:[{product:old.product,qty:old.qty||0,price:old.price||0}];
+   oldItems.forEach(it=>{if(it.product)data.stock[it.product]=(data.stock[it.product]||0)+Number(it.qty||0)});
+   items.forEach(it=>{data.stock[it.product]=(data.stock[it.product]||0)-Number(it.qty||0);rrRememberProduct(it.product,it.price)});
+   const updated={...old,customer:invCustomerName.value.trim(),phone,address:invCustomerAddress.value.trim(),items,product:items[0].product,qty:items[0].qty,price:items[0].price,discount,payment:invPayment.value,notes:invNotes.value.trim(),subtotal,total};
+   list[idx]=updated; setInvoices(list);
+   saveCustomer({name:updated.customer,phone:updated.phone,address:updated.address});
+   save(); renderInvoices(); finishInvoiceEdit(); openInvoice(updated.id); toast('Full invoice updated successfully'); return;
+ }
+ const inv={id:Date.now(),number:invNumber.value.trim(),customer:invCustomerName.value.trim(),phone,address:invCustomerAddress.value.trim(),items,product:items[0].product,qty:items[0].qty,price:items[0].price,discount,payment:invPayment.value,notes:invNotes.value.trim(),subtotal,total,date:new Date().toISOString()};
+ if(list.some(x=>x.number===inv.number)){toast('Invoice number already exists');return}
+ list.unshift(inv);setInvoices(list);saveCustomer({name:inv.customer,phone:inv.phone,address:inv.address});
+ items.forEach(it=>{data.sales.push({invoiceId:inv.id,number:inv.number,product:it.product,qty:it.qty,price:it.price,date:new Date().toLocaleString('en-IN'),customer:inv.customer,phone:inv.phone,payment:inv.payment});data.stock[it.product]=(data.stock[it.product]||0)-it.qty;rrRememberProduct(it.product,it.price)});
+ save();clearInvoiceForm();renderInvoices();openInvoice(inv.id);toast('Multi-item invoice generated successfully');
+}
+
+function invoiceById(id){return getInvoices().find(x=>x.id===id)}
+const RR_UPI_ID='amanguptacric1998@oksbi';
+const RR_UPI_NAME='AMAN KUMAR GUPTA';
+function rrUpiUri(amount,note){
+  const a=Number(amount||0).toFixed(2);
+  return 'upi://pay?pa='+encodeURIComponent(RR_UPI_ID)+'&pn='+encodeURIComponent(RR_UPI_NAME)+'&am='+encodeURIComponent(a)+'&cu=INR'+(note?'&tn='+encodeURIComponent(note):'');
+}
+function rrQrImageUrl(uri){
+  // QR image is generated from the exact UPI URI, so the amount changes with every bill.
+  return 'https://api.qrserver.com/v1/create-qr-code/?size=220x220&margin=8&data='+encodeURIComponent(uri);
+}
+function rrUpiQrHtml(inv){
+  if(String(inv.payment||'').toUpperCase()!=='UPI') return '';
+  const amount=Math.max(0,Number(inv.total||0));
+  const uri=rrUpiUri(amount,'Milk Distributor invoice '+(inv.number||''));
+  return '<div class="upi-qr-box"><h4>📱 Scan to Pay via UPI</h4><div class="upi-qr-code"><img src="'+rrQrImageUrl(uri)+'" alt="UPI QR Code for '+money(amount)+'" decoding="sync"></div><div class="upi-id">UPI: '+safeText(RR_UPI_ID)+'</div><div>Amount: <b>'+money(amount)+'</b></div><div class="upi-note">Scan this QR. The bill amount is already included.</div></div>';
+}
+function rrRenderPaymentQr(){
+  const holder=document.getElementById('invoicePaymentQrPreview');
+  if(!holder)return;
+  const method=document.getElementById('invPayment')?.value||'Cash';
+  if(String(method).toUpperCase()!=='UPI'){holder.innerHTML='';return;}
+  const subtotal=[...document.querySelectorAll('.invoice-item-row')].reduce((s,r)=>s+(Number(r.querySelector('.inv-item-qty')?.value||0)*Number(r.querySelector('.inv-item-price')?.value||0)),0);
+  const discount=Number(document.getElementById('invDiscount')?.value||0);
+  const total=Math.max(0,subtotal-discount);
+  const uri=rrUpiUri(total,'Milk Distributor payment');
+  holder.innerHTML='<div class="upi-qr-box"><h4>📱 UPI Payment QR</h4><div class="upi-qr-code"><img src="'+rrQrImageUrl(uri)+'" alt="UPI QR Code for '+money(total)+'" decoding="sync"></div><div class="upi-id">UPI: '+safeText(RR_UPI_ID)+'</div><div>Amount: <b>'+money(total)+'</b></div><div class="upi-note">Amount changes automatically with the bill.</div></div>';
+}
+const BUSINESS_LOGO_KEY='milk_distributor_business_logo_v1';
+function getBusinessLogo(){return localStorage.getItem(BUSINESS_LOGO_KEY)||'';}
+function renderLogoSettings(){
+  const holder=document.getElementById('logoSettingsPreview'); if(!holder)return;
+  const logo=getBusinessLogo();
+  holder.innerHTML=logo?'<img class="business-logo-small" src="'+logo+'" alt="Business Logo">':'<span class="small-muted">No logo uploaded</span>';
+}
+function saveBusinessLogo(){
+  const input=document.getElementById('businessLogoInput'),file=input&&input.files&&input.files[0];
+  if(!file)return toast('Please select a logo first');
+  if(file.size>2*1024*1024)return toast('Logo must be below 2 MB');
+  const reader=new FileReader();
+  reader.onload=()=>{
+    localStorage.setItem(BUSINESS_LOGO_KEY,reader.result); renderLogoSettings();
+    if(window.rrCloudSync)window.rrCloudSync(true);
+    const msg=document.getElementById('logoSettingsMsg');if(msg)msg.textContent='Logo saved. New invoices will show this logo.';
+    toast('Business logo saved');
+  };
+  reader.readAsDataURL(file);
+}
+function removeBusinessLogo(){
+  localStorage.removeItem(BUSINESS_LOGO_KEY);renderLogoSettings();
+  if(window.rrCloudSync)window.rrCloudSync(true);toast('Business logo removed');
+}
+function changeOwnerCredentials(){
+  const current=document.getElementById('setCurrentPassword')?.value||'';
+  const username=(document.getElementById('setOwnerUsername')?.value||'').trim();
+  const pass=document.getElementById('setOwnerPassword')?.value||'';
+  const pass2=document.getElementById('setOwnerPassword2')?.value||'';
+  const c=adminCreds();
+  if(current!==c.password)return toast('Current password is incorrect');
+  if(!username)return toast('Enter a new owner username');
+  if(pass&&pass.length<6)return toast('New password must be at least 6 characters');
+  if(pass!==pass2)return toast('New passwords do not match');
+  if(workers().some(w=>w.username===username)&&username!==c.username)return toast('Username already exists');
+  localStorage.setItem(CREDS_KEY,JSON.stringify({username,password:pass||c.password}));
+  document.getElementById('setCurrentPassword').value='';
+  document.getElementById('setOwnerPassword').value='';
+  document.getElementById('setOwnerPassword2').value='';
+  document.getElementById('loginUser').placeholder=username;
+  toast('Owner login updated successfully');
+}
+function openSettings(){
+  if(role()!=='admin'){toast('Only Owner can open Settings');return;}
+  go('settings');
+  const c=adminCreds();const u=document.getElementById('setOwnerUsername');if(u)u.value=c.username||'';
+  renderLogoSettings();
+}
+function invoiceHtml(inv){
+  const d=new Date(inv.date).toLocaleString('en-IN');
+  return `<div class="invoice-preview" id="invoicePrint">
+    <div class="invoice-head"><div class="invoice-brand-row">${getBusinessLogo()?`<img class="invoice-business-logo" src="${getBusinessLogo()}" alt="Business Logo">`:``}<div class="invoice-business-info"><div class="invoice-title">MILK DISTRIBUTOR</div><div><b>Owner:</b> Aman Kumar Gupta</div><div><b>Contact:</b> 8210700877</div><div><b>Location:</b> Barsoi Station, Near Kali Mandir</div><small>Milk Wholesale • Invoice / Sales Bill</small></div></div>
+    <div class="invoice-meta"><b>${safeText(inv.number)}</b><br>${safeText(d)}</div></div>
+    <div class="invoice-customer"><b>Customer</b><br>${safeText(inv.customer)}<br>${safeText(inv.phone)}<br>${safeText(inv.address||'Address not provided')}</div>
+    <table class="invoice-items"><thead><tr><th>Item</th><th>Qty</th><th>Rate</th><th>Total</th></tr></thead><tbody>
+    ${(inv.items&&inv.items.length?inv.items:[{product:inv.product,qty:inv.qty,price:inv.price}]).map(it=>`<tr><td>${safeText(it.product)}</td><td>${it.qty}</td><td>${money(it.price)}</td><td>${money(it.qty*it.price)}</td></tr>`).join("")}</tbody></table>
+    <div class="invoice-total"><div><span>Subtotal</span><b>${money(inv.subtotal)}</b></div><div><span>Discount</span><b>${money(inv.discount)}</b></div><div><span>Payment</span><b>${safeText(inv.payment)}</b></div><div class="grand"><span>Grand Total</span><b>${money(inv.total)}</b></div></div>${rrUpiQrHtml(inv)}
+    ${inv.notes?`<p><b>Note:</b> ${safeText(inv.notes)}</p>`:''}
+    <p style="text-align:center;margin-top:25px">Thank you for shopping with Milk Distributor.</p>
+  </div>`;
+}
+function openInvoice(id){
+  const inv=invoiceById(id); if(!inv)return;
+  const w=window.open('','_blank','width=900,height=800');
+  if(!w){toast('Please allow pop-ups for invoice preview');return}
+  w.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>${safeText(inv.number)} - Milk Distributor</title><style>
+  body{font-family:Arial,sans-serif;background:#f5f5f5;padding:20px;color:#111}.invoice-preview{background:#fff;padding:30px;max-width:800px;margin:auto;border:1px solid #ddd}.invoice-head{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;column-gap:18px;border-bottom:2px solid #111;padding-bottom:15px;min-height:86px}.invoice-brand-row{display:contents}.invoice-business-info{grid-column:1;min-width:0;line-height:1.35}.invoice-business-logo{grid-column:2;grid-row:1;width:70px!important;height:70px!important;max-width:70px!important;max-height:70px!important;object-fit:contain;border-radius:8px;display:block;margin:auto;justify-self:center}.invoice-title{font-size:28px;font-weight:900}.invoice-meta{text-align:right;grid-column:3;grid-row:1;justify-self:end}.invoice-customer{margin:18px 0;padding:14px;background:#f5f7fa}.invoice-items{width:100%;border-collapse:collapse}.invoice-items th,.invoice-items td{padding:10px;border-bottom:1px solid #ddd;text-align:left}.invoice-total{margin-left:auto;width:300px;margin-top:15px}.invoice-total div{display:flex;justify-content:space-between;padding:6px}.grand{font-size:18px;font-weight:bold;border-top:2px solid #111}.print{margin:15px auto;display:block;padding:10px 18px}.upi-qr-box{margin:18px auto 4px;padding:14px;border:1px dashed #999;border-radius:12px;text-align:center;background:#fafafa;max-width:300px;break-inside:avoid;page-break-inside:avoid}.upi-qr-code{display:flex;justify-content:center;margin:8px auto;min-height:220px}.upi-qr-code img{width:220px;height:220px;display:block;background:#fff}.upi-id{font-weight:800;font-size:13px}.upi-note{font-size:11px;color:#555}@media print{body{background:white;padding:0}.print{display:none}.invoice-preview{border:0;box-shadow:none;margin:0 auto;padding:12mm;max-width:none}.invoice-business-logo{width:70px!important;height:70px!important;max-width:70px!important;max-height:70px!important}.upi-qr-box{display:block!important;break-inside:avoid;page-break-inside:avoid}.upi-qr-code{display:flex!important}.upi-qr-code img{display:block!important;width:220px!important;height:220px!important}}@media(max-width:600px){.invoice-business-logo{width:62px!important;height:62px!important;max-width:62px!important;max-height:62px!important}.invoice-head{column-gap:8px}.invoice-business-info{font-size:11px}.invoice-title{font-size:20px!important}}</style></head><body onkeydown="if(event.key==='Enter' && document.activeElement.tagName==='INPUT'){event.preventDefault()}">${invoiceHtml(inv)}<button class="print" onclick="printInvoiceNow()">Print / Save PDF</button><script>function printInvoiceNow(){const imgs=[...document.querySelectorAll('.upi-qr-code img')];const pending=imgs.filter(i=>!i.complete||i.naturalWidth===0);if(pending.length){let left=pending.length;pending.forEach(i=>{const done=()=>{left--;if(left===0)window.print()};i.addEventListener('load',done,{once:true});i.addEventListener('error',done,{once:true});});setTimeout(()=>{if(left>0)window.print()},2500);}else{window.print();}}<\/script>
+</body></html>`);
+  w.document.close();
+}
+function shareInvoice(id){
+  const inv=getInvoices().find(x=>x.id===id);if(!inv)return;
+  const text='Milk Distributor Invoice '+inv.number+'\nCustomer: '+inv.customer+'\nMobile: '+inv.phone+'\nTotal: '+money(inv.total)+'\nPayment: '+inv.payment;
+  if(navigator.share){
+    navigator.share({title:'Milk Distributor Invoice '+inv.number,text:text}).catch(()=>{});
+  }else{
+    const url='https://wa.me/91'+inv.phone+'?text='+encodeURIComponent(text);
+    window.open(url,'_blank');
+  }
+}
+function renderInvoices(){
+  const list=getInvoices(); invoiceCount.textContent=list.length;
+  invoiceTable.innerHTML=list.length?'<div class="table-wrap"><table class="table"><thead><tr><th>Invoice</th><th>Customer</th><th>Mobile</th><th>Total</th><th>Date</th><th>Actions</th></tr></thead><tbody>'+
+    list.map(x=>`<tr><td><b>${safeText(x.number)}</b></td><td>${safeText(x.customer)}</td><td>${safeText(x.phone)}</td><td>${money(x.total)}</td><td>${safeText(new Date(x.date).toLocaleDateString('en-IN'))}</td><td><div class="actions"><button class="btn secondary" onclick="openInvoice(${x.id})">View</button><button class="btn primary" onclick="shareInvoice(${x.id})">Share</button><button class="btn secondary" onclick="editInvoice(${x.id})">✏️ Edit Full Invoice</button><button class="btn danger" onclick="removeInvoice(${x.id})">Remove</button></div></td></tr>`).join('')+
+    '</tbody></table></div>':'<div class="empty">No invoices created yet.</div>';
+}
+
+
+function openInvoiceSection(){
+  const sec=document.getElementById('invoices');
+  if(!sec){toast('Invoice module not found');return}
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  sec.classList.add('active');
+  document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
+  const n=document.getElementById('invoiceNav'); if(n)n.classList.add('active');
+  if(typeof renderInvoices==='function') renderInvoices();
+  const num=document.getElementById('invNumber'); if(num && !num.value) num.value=nextInvoiceNumber();
+}
+
+
+function saveNow(){rrSaveData();updateBackupInfo();if(window.rrCloudSync)window.rrCloudSync(true);toast('All data saved successfully');}
+function openBackupSection(){
+  const sec=document.getElementById('backup');
+  if(!sec){toast('Backup module not found');return}
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  sec.classList.add('active');
+  document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
+  const n=document.getElementById('backupNav');if(n)n.classList.add('active');
+  updateBackupInfo();
+}
+function collectBackup(){
+  return {
+    app:'Milk Distributor',
+    version:'1.0',
+    exportedAt:new Date().toISOString(),
+    data: rrLoadData(),
+    invoices: JSON.parse(localStorage.getItem('rr_invoices')||'[]'),
+    workers: JSON.parse(localStorage.getItem('rr_workers')||'[]'),products:rrProducts(),customers:rrContacts('rrCustomers'),suppliers:rrContacts('rrSuppliers'),
+    businessLogo:getBusinessLogo(),
+    adminCredentials: JSON.parse(localStorage.getItem(CREDS_KEY)||'{"username":"amangupta","password":"Milk@2026"}')
+  };
+}
+function downloadBackup(){
+  const blob=new Blob([JSON.stringify(collectBackup(),null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='Milk_Distributor_Backup_'+new Date().toISOString().slice(0,10)+'.json';
+  document.body.appendChild(a);a.click();a.remove();
+  toast('Backup downloaded successfully');
+}
+function restoreBackup(e){
+  const file=e.target.files&&e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=function(){
+    try{
+      const b=JSON.parse(reader.result);
+      if(!b||b.app!=='Milk Distributor')throw new Error('Invalid backup');
+      if(b.data){data=Object.assign(rrDefaultData(),b.data);rrSaveData()}
+      if(Array.isArray(b.invoices))localStorage.setItem('rr_invoices',JSON.stringify(b.invoices));
+      if(b.businessLogo)localStorage.setItem(BUSINESS_LOGO_KEY,b.businessLogo);else localStorage.removeItem(BUSINESS_LOGO_KEY);
+      if(Array.isArray(b.workers))localStorage.setItem('rr_workers',JSON.stringify(b.workers));if(Array.isArray(b.products))rrSaveProducts(b.products);if(Array.isArray(b.customers))localStorage.setItem('rrCustomers',JSON.stringify(b.customers));if(Array.isArray(b.suppliers))localStorage.setItem('rrSuppliers',JSON.stringify(b.suppliers));
+      if(b.adminCredentials)localStorage.setItem('rr_admin_credentials',JSON.stringify(b.adminCredentials));
+      render();renderInvoices();renderWorkers();updateBackupInfo();if(window.rrCloudSync)window.rrCloudSync(true);toast('Backup restored successfully');
+    }catch(err){toast('Invalid backup file')}
+    e.target.value='';
+  };
+  reader.readAsText(file);
+}
+function updateBackupInfo(){
+  const el=document.getElementById('backupInfo');if(!el)return;
+  const inv=JSON.parse(localStorage.getItem('rr_invoices')||'[]');
+  const workers=JSON.parse(localStorage.getItem('rr_workers')||'[]');
+  el.textContent='Invoices: '+inv.length+' • Workers: '+workers.length+' • App data saved automatically in this browser';
+}
+
+function render(){renderInvoices();
+ const s=data.sales.reduce((a,x)=>a+x.qty*x.price,0),p=data.purchases.reduce((a,x)=>a+x.qty*x.price,0),e=data.expenses.reduce((a,x)=>a+x.amount,0),profit=s-p-e;
+ $('mSales').textContent=money(s);$('mPurchase').textContent=money(p);$('mExpense').textContent=money(e);$('mProfit').textContent=money(profit);$('mProfit').className='metric '+(profit>=0?'profit':'loss');
+ $('salesTable').innerHTML=table(['Product','Qty','Price','Total','Payment','Date','Actions'],data.sales.slice().reverse().map((x,ri)=>{const i=data.sales.length-1-ri;return [x.product,x.qty,money(x.price),money(x.qty*x.price),x.payment||'Cash',x.date,`<button class="btn secondary" onclick="editSale(${i})">Edit</button> <button class="btn danger" onclick="removeSale(${i})">Remove</button>`]}));
+ $('purchaseTable').innerHTML=table(['Product','Qty','Cost','Total','Payment','Date','Actions'],data.purchases.slice().reverse().map((x,ri)=>{const i=data.purchases.length-1-ri;return [x.product,x.qty,money(x.price),money(x.qty*x.price),x.payment||'Cash',x.date,`<button class="btn secondary" onclick="editPurchase(${i})">Edit</button> <button class="btn danger" onclick="removePurchase(${i})">Remove</button>`]}));
+ $('expenseTable').innerHTML=table(['Title','Amount','Date','Actions'],data.expenses.slice().reverse().map((x,ri)=>{const i=data.expenses.length-1-ri;return [x.title,money(x.amount),x.date,`<button class="btn secondary" onclick="editExpense(${i})">Edit</button> <button class="btn danger" onclick="removeExpense(${i})">Remove</button>`]}));
+ $('stockTable').innerHTML=table(['Product','Stock','Status','Actions'],Object.entries(data.stock).map(([x,q])=>[x,q,q<=0?'<span class="pill out">Out of stock</span>':q<=5?'<span class="pill low">Low stock</span>':'<span class="pill">Available</span>',`<button class="btn secondary" onclick="editStock(${JSON.stringify(x)})">Edit</button> <button class="btn danger" onclick="removeStock(${JSON.stringify(x)})">Remove</button>`]));
+ const ws=workers();$('workersTable').innerHTML=ws.length?table(['Name','Username','Action'],ws.map(w=>[w.name,w.username,'<button class="btn danger" data-remove-worker="'+w.id+'">Remove</button>'])):'<div class="empty">No workers added yet.</div>';
+ $('reportSummary').innerHTML='<div class="grid"><div><b>Sales</b><br>'+money(s)+'</div><div><b>Purchases</b><br>'+money(p)+'</div><div><b>Expenses</b><br>'+money(e)+'</div><div><b>Profit</b><br>'+money(profit)+'</div></div>';
+ $('today').textContent=new Date().toLocaleDateString('en-IN',{dateStyle:'full'});
+}
+function resetPassword(){const u=$('resetUser').value.trim(),c=$('recoveryCode').value,n=$('newPassword').value,cp=$('confirmPassword').value;if(u!==adminCreds().username)return $('resetMsg').textContent='Username is incorrect.';if(c!=='AMAN-RESET-2026')return $('resetMsg').textContent='Recovery code is incorrect.';if(n.length<8)return $('resetMsg').textContent='Password must be at least 8 characters.';if(n!==cp)return $('resetMsg').textContent='Passwords do not match.';localStorage.setItem(CREDS_KEY,JSON.stringify({username:u,password:n}));$('resetMsg').textContent='Password reset successfully.';setTimeout(()=>{$('forgotModal').classList.add('hidden')},1000)}
+function exportData(){const b=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='milk_distributor_backup.json';a.click();toast('Backup exported')}
+function clearData(){if(confirm('Delete all business data?')){data={sales:[],purchases:[],expenses:[],stock:{}};save();toast('All data deleted')}}
+function theme(){document.body.classList.toggle('dark');localStorage.setItem('rr_theme',document.body.classList.contains('dark')?'dark':'light')}
+
+document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.page,b)));
+$('loginBtn').addEventListener('click',login);$('logoutBtn').addEventListener('click',logout);$('themeBtn').addEventListener('click',theme);
+$('saleForm').addEventListener('submit',addSale);$('purchaseForm').addEventListener('submit',addPurchase);rrInitTransactionRows();$('expenseForm').addEventListener('submit',addExpense);$('workerForm').addEventListener('submit',addWorker);
+$('workersTable').addEventListener('click',e=>{const b=e.target.closest('[data-remove-worker]');if(b)removeWorker(Number(b.dataset.removeWorker))});
+$('exportBtn').addEventListener('click',exportData);$('clearBtn').addEventListener('click',clearData);
+$('loginType').addEventListener('change',()=>{const w=$('loginType').value==='worker';$('loginUserLabel').textContent=w?'Worker Username':'Owner Username';$('loginPasswordLabel').textContent=w?'Worker Password':'Owner Password';$('loginUser').placeholder=w?'Enter worker username':'amangupta';$('loginPassword').placeholder=w?'Enter worker password':'amangupta'});
+$('forgotBtn').addEventListener('click',()=>{$('forgotModal').classList.remove('hidden');$('resetMsg').textContent=''});
+$('closeForgot').addEventListener('click',()=>{$('forgotModal').classList.add('hidden')});$('resetBtn').addEventListener('click',resetPassword);
+$('loginPassword').addEventListener('keydown',e=>{if(e.key==='Enter')login()});
+if(localStorage.getItem('rr_theme')==='dark')document.body.classList.add('dark');
+if(localStorage.getItem('rr_logged')==='1'){$('login').classList.add('hidden');$('app').classList.remove('hidden');setupRole();render()}
+else render();
+
+document.addEventListener('DOMContentLoaded',function(){
+  const n=document.getElementById('invoiceNav');
+  if(n){n.addEventListener('click',function(e){e.preventDefault();openInvoiceSection();});}
+  if(document.getElementById('invNumber')) document.getElementById('invNumber').value=nextInvoiceNumber();
+   if(document.getElementById('invoiceItemsBuilder')){addInvoiceItemRow();updateInvoiceItemsTotal()}
+  if(typeof renderInvoices==='function') renderInvoices();
+});
+
+
+document.addEventListener('input',function(e){
+  if(e.target && ['INPUT','SELECT','TEXTAREA'].includes(e.target.tagName)){
+    clearTimeout(window.__rrSaveTimer);
+    window.__rrSaveTimer=setTimeout(()=>{try{rrSaveData()}catch(_){}},500);
+  }
+});
+window.addEventListener('beforeunload',function(){try{rrSaveData()}catch(_){}});
+
+
+function rrInvoices(){return typeof getInvoices==='function'?getInvoices():JSON.parse(localStorage.getItem('rr_invoices')||'[]');}
+function rrOpenModal(){const m=$('masterDetailModal');if(m)m.classList.remove('hidden')}
+function closeMasterDetail(){const m=$('masterDetailModal');if(m)m.classList.add('hidden')}
+function openMasterList(type){
+  const title={products:'📦 Item / Product List',customers:'👥 Customer List',suppliers:'🏪 Supplier / Purchase List'}[type]||'List';
+  $('masterDetailTitle').textContent=title;
+  const inv=rrInvoices();
+  if(type==='products'){
+    const products=rrProducts();
+    $('masterDetailBody').innerHTML='<div class="field"><input id="masterQuickSearch" oninput="rrFilterMasterList()" placeholder="🔎 Search item / customer / supplier by name or number"></div>'+products.map(p=>{
+      const purchases=inv.flatMap(x=>x.items||[]).filter(i=>i.product===p.name);
+      const stock=(data.stock&&data.stock[p.name])||0;
+      const buyers=inv.filter(x=>(x.items||[]).some(i=>i.product===p.name));
+      return `<div class="card list-row" onclick='showProductDetail(${JSON.stringify(p.name)})'><div><b>${safeText(p.name)}</b><div class="small-muted">Stock: ${stock} • Saved price: ${money(p.price||0)} • Sold invoices: ${buyers.length}</div></div><span>›</span></div>`;
+    }).join('')||'<p class="small-muted">No products in list yet.</p>';
+  }else if(type==='customers'){
+    const map={};
+    rrContacts('rr_customers').forEach(c=>{map[c.phone||c.name]=c});
+    inv.forEach(x=>{const k=x.phone||x.customer;if(k)map[k]={name:x.customer,phone:x.phone,address:x.address}});
+    $('masterDetailBody').innerHTML='<div class="field"><input id="masterQuickSearch" oninput="rrFilterMasterList()" placeholder="🔎 Search by name or mobile number"></div>'+Object.values(map).map(c=>{
+      const rows=inv.filter(x=>(c.phone&&x.phone===c.phone)||(c.name&&x.customer===c.name));
+      const total=rows.reduce((a,x)=>a+(Number(x.total)||0),0);
+      const due=rows.filter(x=>x.payment==='Due').reduce((a,x)=>a+(Number(x.total)||0),0);
+      return `<div class="card list-row" onclick='showCustomerDetail(${JSON.stringify(c.name||c.phone)})'><div><b>${safeText(c.name||'Unnamed')}</b><div class="small-muted">${safeText(c.phone||'')} • Purchases: ${rows.length} • Total: ${money(total)} • Due: ${money(due)}</div></div><span>›</span></div>`;
+    }).join('')||'<p class="small-muted">No customers yet.</p>';
+  }else{
+    const map={};
+    rrContacts('rr_suppliers').forEach(c=>{map[c.phone||c.name]=c});
+    const purchases=JSON.parse(localStorage.getItem('rr_purchases')||'[]');
+    purchases.forEach(x=>{const k=x.supplierPhone||x.supplier||x.sourceName;if(k)map[k]={name:x.supplier||x.sourceName,phone:x.supplierPhone||x.sourcePhone,address:x.supplierAddress||x.address}});
+    $('masterDetailBody').innerHTML='<div class="field"><input id="masterQuickSearch" oninput="rrFilterMasterList()" placeholder="🔎 Search by name or mobile number"></div>'+Object.values(map).map(c=>{
+      const rows=purchases.filter(x=>(c.phone&&((x.supplierPhone||x.sourcePhone)===c.phone))||(c.name&&((x.supplier||x.sourceName)===c.name)));
+      const total=rows.reduce((a,x)=>a+(Number(x.total||x.amount||((x.qty||0)*(x.price||0)))||0),0);
+      return `<div class="card list-row" onclick='showSupplierDetail(${JSON.stringify(c.name||c.phone)})'><div><b>${safeText(c.name||'Unnamed')}</b><div class="small-muted">${safeText(c.phone||'')} • Purchases: ${rows.length} • Total paid/owed: ${money(total)}</div></div><span>›</span></div>`;
+    }).join('')||'<p class="small-muted">No suppliers yet.</p>';
+  }
+  rrOpenModal();
+}
+function showProductDetail(name){
+  const inv=rrInvoices(), purchases=JSON.parse(localStorage.getItem('rr_purchases')||'[]');
+  const sold=inv.flatMap(x=>(x.items||[]).map(i=>({...i,invoice:x}))).filter(i=>i.product===name);
+  const bought=purchases.filter(x=String(x.product||x.item||'').toLowerCase()===name.toLowerCase());
+  const stock=(data.stock&&data.stock[name])||0;
+  $('masterDetailTitle').textContent='📦 '+name;
+  $('masterDetailBody').innerHTML=`<div class="stats"><div class="stat"><div class="label">Current Stock</div><div class="value">${stock}</div></div><div class="stat"><div class="label">Sold Qty</div><div class="value">${sold.reduce((a,x)=>a+Number(x.qty||0),0)}</div></div><div class="stat"><div class="label">Purchase Qty</div><div class="value">${bought.reduce((a,x)=>a+Number(x.qty||0),0)}</div></div></div>
+  <h3>Purchase Sources</h3>${bought.map(x=>`<div class="card"><b>${safeText(x.supplier||x.sourceName||'Supplier')}</b><div class="small-muted">${safeText(x.supplierPhone||x.sourcePhone||'')} • Qty ${x.qty||0} • ${money(x.total||x.amount||((x.qty||0)*(x.price||0)))}</div></div>`).join('')||'<p class="small-muted">No purchase source recorded.</p>'}
+  <h3>Sales</h3>${sold.map(x=>`<div class="card"><b>${safeText(x.invoice.customer||'Customer')}</b><div class="small-muted">${safeText(x.invoice.phone||'')} • Qty ${x.qty} • ${money(x.qty*x.price)} • ${safeText(x.invoice.payment||'')}</div></div>`).join('')||'<p class="small-muted">No sales recorded.</p>'}`;
+}
+function showCustomerDetail(name){
+  const inv=rrInvoices().filter(x=>x.customer===name||x.phone===name);
+  const total=inv.reduce((a,x)=>a+Number(x.total||0),0);
+  const due=inv.filter(x=>x.payment==='Due').reduce((a,x)=>a+Number(x.total||0),0);
+  $('masterDetailTitle').textContent='👤 '+name;
+  $('masterDetailBody').innerHTML=`<div class="stats"><div class="stat"><div class="label">Invoices</div><div class="value">${inv.length}</div></div><div class="stat"><div class="label">Total Purchase</div><div class="value">${money(total)}</div></div><div class="stat"><div class="label">Due / Credit</div><div class="value">${money(due)}</div></div></div>
+  ${inv.map(x=>`<div class="card"><b>Invoice ${safeText(x.number)}</b><div>${new Date(x.date).toLocaleString('en-IN')} • ${money(x.total)} • ${safeText(x.payment||'')}</div><div class="small-muted">${(x.items||[]).map(i=>safeText(i.product)+' × '+i.qty).join(', ')}</div></div>`).join('')}`;
+}
+function showSupplierDetail(name){
+  const purchases=JSON.parse(localStorage.getItem('rr_purchases')||'[]').filter(x=>(x.supplier||x.sourceName)===name||(x.supplierPhone||x.sourcePhone)===name);
+  const total=purchases.reduce((a,x)=>a+Number(x.total||x.amount||((x.qty||0)*(x.price||0))),0);
+  $('masterDetailTitle').textContent='🏪 '+name;
+  $('masterDetailBody').innerHTML=`<div class="stats"><div class="stat"><div class="label">Purchase Entries</div><div class="value">${purchases.length}</div></div><div class="stat"><div class="label">Total Purchase</div><div class="value">${money(total)}</div></div></div>
+  ${purchases.map(x=>`<div class="card"><b>${safeText(x.product||x.item||'Item')}</b><div class="small-muted">Qty ${x.qty||0} • ${money(x.total||x.amount||((x.qty||0)*(x.price||0)))} • ${safeText(x.payment||'')}</div></div>`).join('')||'<p class="small-muted">No purchase records found.</p>'}`;
+}
+function openPaymentList(type){
+  const inv=rrInvoices();
+  const rows=type==='All'?inv:inv.filter(x=>(x.payment||'Cash')===type);
+  $('masterDetailTitle').textContent=type==='All'?'💳 All Sales':'💰 '+type;
+  $('masterDetailBody').innerHTML=`<div class="stats"><div class="stat"><div class="label">Entries</div><div class="value">${rows.length}</div></div><div class="stat"><div class="label">Amount</div><div class="value">${money(rows.reduce((a,x)=>a+Number(x.total||0),0))}</div></div></div>
+  ${rows.map(x=>`<div class="card list-row" onclick='showCustomerDetail(${JSON.stringify(x.customer||x.phone||"Customer")})'><div><b>${safeText(x.customer||'Customer')}</b><div class="small-muted">${safeText(x.phone||'')} • Invoice ${safeText(x.number)} • ${money(x.total)}</div></div><span>${safeText(x.payment||'Cash')}</span></div>`).join('')||'<p class="small-muted">No records.</p>'}`;
+  rrOpenModal();
+}
+function rrUpdatePaymentSummary(){
+  const inv=rrInvoices();
+  const sum=t=>inv.filter(x=>(x.payment||'Cash')===t).reduce((a,x)=>a+Number(x.total||0),0);
+  if($('payCash'))$('payCash').textContent=money(sum('Cash'));
+  if($('payUPI'))$('payUPI').textContent=money(sum('UPI'));
+  if($('payDue'))$('payDue').textContent=money(sum('Due'));
+  if($('payTotal'))$('payTotal').textContent=money(inv.reduce((a,x)=>a+Number(x.total||0),0));
+}
+document.addEventListener('DOMContentLoaded',()=>{setTimeout(rrUpdatePaymentSummary,300);});
+
+function rrFilterMasterList(){
+  const q=($('masterQuickSearch')?.value||'').toLowerCase().trim();
+  document.querySelectorAll('#masterDetailBody .list-row').forEach(r=>r.style.display=(!q||r.textContent.toLowerCase().includes(q))?'flex':'none');
+}
+setInterval(rrUpdatePaymentSummary,1500);
+function rrPurchaseRows(){return JSON.parse(localStorage.getItem('rr_purchases')||'[]')}
+function rrSaleRows(){return rrInvoices()}
+function rrM(n){return money(Number(n)||0)}
+function showSupplierDetail(name){
+ const rows=rrPurchaseRows().filter(x=>(x.supplier||x.sourceName||'')===name||(x.supplierPhone||x.sourcePhone||'')===name);
+ const total=rows.reduce((a,x)=>a+Number(x.total||x.amount||((x.qty||0)*(x.price||0))),0);
+ const due=rows.filter(x=>String(x.payment||'').toLowerCase()==='due').reduce((a,x)=>a+Number(x.total||x.amount||((x.qty||0)*(x.price||0))),0);
+ $('masterDetailTitle').textContent='🏪 '+name+' — Purchase Ledger';
+ $('masterDetailBody').innerHTML=`<div class="stats"><div class="stat"><div class="label">Total Bought</div><div class="value">${rrM(total)}</div></div><div class="stat"><div class="label">Remaining Due</div><div class="value">${rrM(due)}</div></div></div>${rows.map(x=>`<div class="card"><b>${safeText(x.product||x.item||'Item')}</b><div>Qty ${x.qty||0} × ${rrM(x.price||0)} = <b>${rrM(x.total||x.amount||((x.qty||0)*(x.price||0)))}</b></div><div class="small-muted">Payment: ${safeText(x.payment||'Not specified')} • ${safeText(x.date||'')}</div></div>`).join('')||'<p class="small-muted">No purchase records.</p>'}`;
+}
+function editCustomer(name,phone){
+ const customers=getCustomers();
+ const c=customers.find(x=>(phone&&x.phone===phone)||(!phone&&x.name===name)||x.name===name);
+ if(!c)return;
+ const newName=prompt('Customer Name:',c.name||''); if(newName===null)return;
+ const newPhone=prompt('Mobile / Contact:',c.phone||''); if(newPhone===null)return;
+ const newAddress=prompt('Customer Details / Address:',c.address||''); if(newAddress===null)return;
+ const list=JSON.parse(localStorage.getItem('rr_customers')||'[]');
+ const idx=list.findIndex(x=>(c.phone&&x.phone===c.phone)||x.name===c.name);
+ const updated={name:newName.trim(),phone:newPhone.trim(),address:newAddress.trim()};
+ if(idx>=0)list[idx]=updated; else list.unshift(updated);
+ localStorage.setItem('rr_customers',JSON.stringify(list.slice(0,1000)));
+ render();
+ showCustomerDetail(updated.name||updated.phone);
+ toast('Customer details updated');
+}
+function showCustomerDetail(name){
+ const rows=rrSaleRows().filter(x=>x.customer===name||x.phone===name);
+ const customers=getCustomers();
+ const c=customers.find(x=>x.name===name||x.phone===name) || rows[0] || {name:name,phone:'',address:''};
+ const total=rows.reduce((a,x)=>a+Number(x.total||((x.qty||0)*(x.price||0))||0),0);
+ const due=rows.filter(x=>['due','credit'].includes(String(x.payment||'').toLowerCase())).reduce((a,x)=>a+Number(x.total||((x.qty||0)*(x.price||0))||0),0);
+ $('masterDetailTitle').textContent='👤 '+(c.name||name)+' — Customer Details';
+ $('masterDetailBody').innerHTML=`<div class="actions" style="margin-bottom:12px"><button class="btn primary" type="button" onclick='editCustomer(${JSON.stringify(c.name||name)},${JSON.stringify(c.phone||'')})'>✏️ Edit Customer Details</button></div><div class="card" style="margin-bottom:12px"><b>Customer Name:</b> ${safeText(c.name||'')}<br><b>Mobile:</b> ${safeText(c.phone||'')}<br><b>Details / Address:</b> ${safeText(c.address||'Not provided')}</div><div class="stats"><div class="stat"><div class="label">Total Sale</div><div class="value">${rrM(total)}</div></div><div class="stat"><div class="label">Customer Due</div><div class="value">${rrM(due)}</div></div></div>${rows.map(x=>`<div class="card"><b>Sale / Invoice ${safeText(x.number||'')}</b><div>${safeText(x.product||'')} × ${x.qty||0} • ${rrM(x.total||((x.qty||0)*(x.price||0)))} • ${safeText(x.payment||'Cash')}</div><div class="small-muted">${safeText(x.date||'')} • ${safeText(x.phone||'')}</div></div>`).join('')||'<p class="small-muted">No sales records.</p>'}`;
+ rrOpenModal();
+}
+function rrRenderPaymentChart(){
+ const el=$('paymentChart'); if(!el)return;
+ const v={Cash:0,UPI:0,Due:0}; rrInvoices().forEach(x=>{let k=x.payment==='UPI'?'UPI':x.payment==='Due'?'Due':'Cash';v[k]+=Number(x.total||0)});
+ const total=v.Cash+v.UPI+v.Due;
+ el.innerHTML=total?Object.entries(v).map(([k,n])=>`<div style="display:flex;align-items:center;gap:8px;margin:8px 0"><b style="width:75px">${k}</b><div style="flex:1;height:22px;background:#eee;border-radius:12px;overflow:hidden"><div style="height:100%;width:${(n/total*100).toFixed(1)}%;background:var(--primary,#4f46e5)"></div></div><b style="width:90px;text-align:right">${money(n)}</b></div>`).join(''):'<span class="small-muted">No payment data yet.</span>';
+ if($('payCash'))$('payCash').textContent=money(v.Cash); if($('payUPI'))$('payUPI').textContent=money(v.UPI); if($('payDue'))$('payDue').textContent=money(v.Due);
+}
+setInterval(rrRenderPaymentChart,1500);
+
+
+function openAnalytics(){
+  let m=document.getElementById('analyticsModal');
+  if(!m){
+    console.error('analyticsModal missing from main DOM');
+    alert('Analysis screen is unavailable in this file. Please use the latest HTML version.');
+    return;
+  }
+  if(m.parentElement!==document.body) document.body.appendChild(m);
+  m.classList.remove('hidden');
+  m.style.display='flex'; m.style.position='fixed'; m.style.inset='0';
+  m.style.zIndex='2147483647'; m.style.visibility='visible'; m.style.opacity='1';
+  document.body.style.overflow='hidden';
+  try{ renderAnalytics(); }catch(err){
+    console.error('Analytics error:',err);
+    const k=document.getElementById('analyticsKPIs');
+    if(k)k.innerHTML='<div class="card" style="grid-column:1/-1"><b>⚠️ Analysis loading error</b><div class="small-muted">The Analysis screen is open. Refresh once to recalculate your records.</div></div>';
+  }
+}
+window.openAnalytics=openAnalytics;
+function bindAnalyticsButton(){
+  const b=document.getElementById('analyticsNav');
+  if(!b || b.dataset.analyticsBound==='1') return;
+  b.dataset.analyticsBound='1';
+  let lastTouch=0;
+  b.addEventListener('touchend',function(e){
+    e.preventDefault();
+    lastTouch=Date.now();
+    openAnalytics();
+  },{passive:false});
+  b.addEventListener('click',function(e){
+    e.preventDefault();
+    if(Date.now()-lastTouch<700) return;
+    openAnalytics();
+  });
+}
+
+
+function closeAnalytics(){
+  const m=$('analyticsModal');
+  if(m)m.classList.add('hidden');
+  m.style.display='none';
+  document.body.style.overflow='';
+  closeCustomerAnalyticsDetail();
+}
+function rrAnalyticsInvoices(){
+  // The main Milk Distributor dashboard stores sales in data.sales.
+  return Array.isArray(data && data.sales) ? data.sales : [];
+}
+function rrAnalyticsPurchases(){
+  // The main dashboard stores purchases in data.purchases.
+  return Array.isArray(data && data.purchases) ? data.purchases : [];
+}
+function rrDateOk(date,period){
+  if(period==='all')return true;
+  const d=new Date(date);
+  if(isNaN(d))return true;
+  const now=new Date();
+  if(period==='month')return d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear();
+  const days=Number(period);
+  return (now-d)<=days*86400000 && (now-d)>=-86400000;
+}
+function rrAmount(x){
+  return Number(x.total||x.amount||((Number(x.qty)||0)*(Number(x.price)||0))||0);
+}
+function rrPayment(x){
+  const p=String(x.payment||x.method||'Cash').toLowerCase().trim();
+  if(p==='upi')return 'UPI';
+  if(p==='due'||p==='credit'||p==='credit/due')return 'Due';
+  return 'Cash';
+}
+function rrBarChart(el,rows,maxVal,unit='₹'){
+  if(!el)return;
+  if(!rows.length){el.innerHTML='<div class="small-muted">No data available.</div>';return;}
+  el.innerHTML=rows.map(r=>{
+    const pct=maxVal?Math.max(2,Math.min(100,(Number(r.value||0)/maxVal)*100)):2;
+    return `<div style="display:grid;grid-template-columns:125px 1fr 105px;gap:8px;align-items:center;margin:9px 0">
+      <b style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${safeText(r.label)}</b>
+      <div style="height:22px;background:#eef0f4;border-radius:20px;overflow:hidden"><div style="height:100%;width:${pct.toFixed(1)}%;background:var(--primary,#4f46e5);border-radius:20px"></div></div>
+      <b style="text-align:right">${unit}${Number(r.value||0).toLocaleString('en-IN',{maximumFractionDigits:2})}</b>
+    </div>`;
+  }).join('');
+}
+function rrProductRows(invoices){
+  const products={};
+  invoices.forEach(x=>{
+    // Sales records are one row per product in the main dashboard.
+    if(x.product || x.itemName || x.name){
+      const n=x.product||x.itemName||x.name||'Unknown Item';
+      const q=Number(x.qty||x.quantity||0);
+      const price=Number(x.price||x.retailPrice||x.rate||0);
+      if(!products[n])products[n]={qty:0,revenue:0};
+      products[n].qty+=q;
+      products[n].revenue+=q*price;
+    }
+    // Also support invoice-style item arrays if present.
+    (x.items||[]).forEach(it=>{
+      const n=it.product||it.name||it.itemName||'Unknown Item';
+      const q=Number(it.qty||it.quantity||0);
+      const price=Number(it.price||it.retailPrice||it.rate||0);
+      if(!products[n])products[n]={qty:0,revenue:0};
+      products[n].qty+=q;
+      products[n].revenue+=q*price;
+    });
+  });
+  return Object.entries(products).map(([label,v])=>({label,...v}));
+}
+function rrCustomerKey(x){
+  return String(x.phone||x.mobile||x.customerMobile||x.customer||x.customerName||'walkin').trim();
+}
+function rrCustomerName(x){
+  return String(x.customer||x.customerName||x.customerNameText||x.name||'Walk-in Customer').trim();
+}
+function renderProfessionalAnalytics(invoices,purchases,salesTotal,purchaseTotal,profit){
+  const count=invoices.length,avg=count?salesTotal/count:0;
+  const due=invoices.filter(x=>rrPayment(x)==='Due').reduce((a,x)=>a+Number(x.total||0),0);
+  const duePct=salesTotal?(due/salesTotal*100):0,margin=salesTotal?(profit/salesTotal*100):0;
+  const lowStock=Object.entries(data.stock||{}).filter(([k,v])=>Number(v)<=5).length;
+  const box=document.getElementById('analyticsManagement');
+  if(box)box.innerHTML=[
+    ['Invoices',count,'Sales bills'],['Average Bill',money(avg),'Revenue / invoice'],
+    ['Gross Margin',margin.toFixed(1)+'%','Estimated'],['Due Ratio',duePct.toFixed(1)+'%',money(due)+' outstanding'],
+    ['Purchases',purchases.length,'Purchase records'],['Low Stock',lowStock,'Items ≤ 5 units']
+  ].map(x=>`<div class="analytics-highlight"><div class="label">${x[0]}</div><div class="value">${x[1]}</div><div class="small-muted">${x[2]}</div></div>`).join('');
+  const byDay={};
+  invoices.forEach(x=>{const d=new Date(x.date);const key=isNaN(d)?String(x.date||'Unknown'):d.toLocaleDateString('en-IN',{day:'2-digit',month:'short'});byDay[key]=(byDay[key]||0)+Number(x.total||0);});
+  const trend=Object.entries(byDay).slice(-14).map(([label,value])=>({label,value}));
+  const trendEl=document.getElementById('salesTrendAnalytics');
+  if(trendEl)rrBarChart(trendEl,trend,Math.max(...trend.map(x=>x.value),1));
+  const stockRows=Object.entries(data.stock||{}).map(([name,qty])=>({name,qty:Number(qty)||0})).sort((a,b)=>a.qty-b.qty).slice(0,10);
+  const sr=document.getElementById('stockRiskAnalytics');
+  if(sr)sr.innerHTML=stockRows.length?stockRows.map(x=>{const cls=x.qty<=0?'pill out':x.qty<=5?'pill low':'pill',label=x.qty<=0?'OUT OF STOCK':x.qty<=5?'LOW STOCK':'OK';return `<div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)"><b>${safeText(x.name)}</b><span>${x.qty} <span class="${cls}">${label}</span></span></div>`;}).join(''):'No stock data available.';
+}
+function renderAnalytics(){
+  const period=$('analyticsPeriod')?.value||'all';
+  const invoices=rrAnalyticsInvoices().filter(x=>rrDateOk(x.date||x.createdAt,period));
+  const purchases=rrAnalyticsPurchases().filter(x=>rrDateOk(x.date||x.createdAt,period));
+
+  const salesTotal=invoices.reduce((a,x)=>a+Number(x.total||0),0);
+  const purchaseTotal=purchases.reduce((a,x)=>a+rrAmount(x),0);
+  const profit=salesTotal-purchaseTotal;
+  renderProfessionalAnalytics(invoices,purchases,salesTotal,purchaseTotal,profit);
+
+  const pay={Cash:0,UPI:0,Due:0};
+  invoices.forEach(x=>pay[rrPayment(x)]+=Number(x.total||0));
+  const customerDue=invoices.filter(x=>rrPayment(x)==='Due').reduce((a,x)=>a+Number(x.total||0),0);
+  const supplierDue=purchases.filter(x=>rrPayment(x)==='Due').reduce((a,x)=>a+rrAmount(x),0);
+  const cashCollection=pay.Cash, upiCollection=pay.UPI;
+
+  $('analyticsKPIs').innerHTML=`
+    <div class="stat"><div class="label">Sales Revenue</div><div class="value">${money(salesTotal)}</div></div>
+    <div class="stat"><div class="label">🛒 Purchasing Cost</div><div class="value">${money(purchaseTotal)}</div></div>
+    <div class="stat"><div class="label">📈 Estimated Profit</div><div class="value">${money(profit)}</div></div>
+    <div class="stat"><div class="label">👥 Customer Due</div><div class="value">${money(customerDue)}</div></div>
+    <div class="stat"><div class="label">🏪 Supplier Due</div><div class="value">${money(supplierDue)}</div></div>
+    <div class="stat"><div class="label">💵 Cash Collection</div><div class="value">${money(cashCollection)}</div></div>
+    <div class="stat"><div class="label">📱 UPI Collection</div><div class="value">${money(upiCollection)}</div></div>
+    <div class="stat"><div class="label">⏳ Credit / Due</div><div class="value">${money(pay.Due)}</div></div>`;
+
+  rrBarChart($('paymentAnalyticsChart'),
+    Object.entries(pay).map(([label,value])=>({label,value})),
+    Math.max(...Object.values(pay),1));
+
+  rrBarChart($('profitAnalyticsChart'),[
+    {label:'Sales',value:salesTotal},
+    {label:'Purchase',value:purchaseTotal},
+    {label:'Profit',value:Math.max(0,profit)}
+  ],Math.max(salesTotal,purchaseTotal,Math.max(0,profit),1));
+
+  const products=rrProductRows(invoices);
+  const byQty=[...products].sort((a,b)=>b.qty-a.qty).slice(0,10);
+  const byRevenue=[...products].sort((a,b)=>b.revenue-a.revenue).slice(0,10);
+
+  $('topSellingQtyList').innerHTML=byQty.length?byQty.map((x,i)=>
+    `<div class="card" style="margin:7px 0;padding:10px"><b>${i+1}. ${safeText(x.label)}</b><div class="small-muted">Sold Quantity: ${x.qty} • Revenue: ${money(x.revenue)}</div></div>`
+  ).join(''):'<div class="small-muted">No sales item data available.</div>';
+
+  $('highestRevenueList').innerHTML=byRevenue.length?byRevenue.map((x,i)=>
+    `<div class="card" style="margin:7px 0;padding:10px"><b>${i+1}. ${safeText(x.label)}</b><div class="small-muted">Revenue: ${money(x.revenue)} • Sold Qty: ${x.qty}</div></div>`
+  ).join(''):'<div class="small-muted">No product revenue data available.</div>';
+
+  rrBarChart($('productRevenueGraph'),
+    byRevenue.map(x=>({label:x.label,value:x.revenue})),
+    Math.max(...byRevenue.map(x=>x.revenue),1));
+
+  const suppliers={};
+  purchases.forEach(x=>{
+    const n=x.supplier||x.sourceName||x.supplierName||'Unknown Supplier';
+    const amount=rrAmount(x);
+    if(!suppliers[n])suppliers[n]={bought:0,due:0,qty:0};
+    suppliers[n].bought+=amount;
+    suppliers[n].qty+=Number(x.qty||x.quantity||0);
+    if(rrPayment(x)==='Due')suppliers[n].due+=amount;
+  });
+  const sr=Object.entries(suppliers).sort((a,b)=>b[1].bought-a[1].bought);
+  $('supplierAnalyticsList').innerHTML=sr.length?sr.map(([n,x])=>
+    `<div class="card" style="margin:7px 0"><b>${safeText(n)}</b>
+      <div>Purchased: ${money(x.bought)} • Qty: ${x.qty}</div>
+      <div class="small-muted">Paid: ${money(x.bought-x.due)} • Remaining Due: ${money(x.due)}</div>
+    </div>`).join(''):'<div class="small-muted">No purchase supplier data available.</div>';
+
+  const customers={};
+  invoices.forEach(x=>{
+    const key=rrCustomerKey(x), n=rrCustomerName(x), amount=Number(x.total||0), p=rrPayment(x);
+    if(!customers[key])customers[key]={name:n,phone:x.phone||x.mobile||'',sales:0,due:0,cash:0,upi:0,count:0,invoices:[]};
+    customers[key].sales+=amount;
+    customers[key].count++;
+    customers[key].invoices.push(x);
+    if(p==='Due')customers[key].due+=amount;
+    if(p==='Cash')customers[key].cash+=amount;
+    if(p==='UPI')customers[key].upi+=amount;
+  });
+  const rows=Object.entries(customers).sort((a,b)=>b[1].sales-a[1].sales);
+
+  $('customerListAnalytics').innerHTML=rows.length?rows.map(([key,x],i)=>
+    `<div class="card customer-analytics-row" data-search="${safeText((x.name+' '+x.phone+' '+key).toLowerCase())}" onclick="showCustomerAnalyticsDetail(${JSON.stringify(key)})" style="margin:7px 0;cursor:pointer">
+      <b>${i+1}. ${safeText(x.name)}</b> <span>${safeText(x.phone)}</span>
+      <div class="small-muted">Sales: ${money(x.sales)} • Due: ${money(x.due)} • Tap for full account →</div>
+    </div>`).join('')
+    :'<div class="small-muted">No customer records yet.</div>';
+
+  $('customerAnalyticsList').innerHTML=rows.length?rows.map(([key,x])=>
+    `<div class="card" style="margin:7px 0"><b>${safeText(x.name)}</b>
+      <div>Invoices: ${x.count} • Sales: ${money(x.sales)}</div>
+      <div class="small-muted">Received: ${money(x.sales-x.due)} • Due: ${money(x.due)}</div>
+    </div>`).join(''):'<div class="small-muted">No customer sales data available.</div>';
+
+  const statusEl=$('businessStatusAnalytics');
+  let statusTitle, statusText;
+  if(!salesTotal && !purchaseTotal){
+    statusTitle='⚪ No Business Data Yet';
+    statusText='Add sales and purchase entries to see the business health.';
+  }else if(profit>0 && customerDue<=salesTotal*0.25){
+    statusTitle='🟢 Business Status: Healthy';
+    statusText='Sales are above purchase cost and customer due is under control.';
+  }else if(profit>=0){
+    statusTitle='🟡 Business Status: Watch';
+    statusText='Business is not in loss, but profit or outstanding dues need attention.';
+  }else{
+    statusTitle='🔴 Business Status: Attention Required';
+    statusText='Recorded purchase cost is higher than sales revenue for this period.';
+  }
+  statusEl.innerHTML=`<div class="card" style="margin:0"><b>${statusTitle}</b><div class="small-muted">${statusText}</div>
+    <div style="margin-top:8px">Sales: ${money(salesTotal)} • Purchase: ${money(purchaseTotal)} • Profit: ${money(profit)} • Customer Due: ${money(customerDue)} • Supplier Due: ${money(supplierDue)}</div></div>`;
+}
+function showCustomerAnalyticsDetail(key){
+  const period=$('analyticsPeriod')?.value||'all';
+  const invoices=rrAnalyticsInvoices().filter(x=>rrDateOk(x.date||x.createdAt,period));
+  const list=invoices.filter(x=>rrCustomerKey(x)===String(key));
+  if(!list.length)return;
+  const name=rrCustomerName(list[0]), phone=list[0].phone||list[0].mobile||'';
+  let sales=0,due=0,cash=0,upi=0;
+  list.forEach(x=>{
+    const a=Number(x.total||0),p=rrPayment(x);
+    sales+=a;if(p==='Due')due+=a;if(p==='Cash')cash+=a;if(p==='UPI')upi+=a;
+  });
+  $('customerDetailTitle').textContent=(phone?name+' • '+phone:name);
+  $('customerDetailBody').innerHTML=`
+    <div class="stats">
+      <div class="stat"><div class="label">Total Sales</div><div class="value">${money(sales)}</div></div>
+      <div class="stat"><div class="label">Cash</div><div class="value">${money(cash)}</div></div>
+      <div class="stat"><div class="label">UPI</div><div class="value">${money(upi)}</div></div>
+      <div class="stat"><div class="label">Due</div><div class="value">${money(due)}</div></div>
+    </div>
+    <div style="margin-top:12px">
+      ${list.map((x,i)=>`<div class="card" style="margin:7px 0">
+        <b>Sale #${i+1}</b> • ${safeText(x.date||'')}
+        <div>Total: ${money(Number(x.total||0))} • Payment: ${safeText(rrPayment(x))}</div>
+        <div class="small-muted">${(x.items||[]).length ? (x.items||[]).map(it=>safeText(it.product||it.name||it.itemName||'Item')+' × '+Number(it.qty||it.quantity||0)).join(', ') : safeText(x.product||x.itemName||'Item')+' × '+Number(x.qty||x.quantity||0)}</div>
+      </div>`).join('')}
+    </div>`;
+  $('customerDetailAnalytics').classList.remove('hidden');
+  $('customerDetailAnalytics').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function closeCustomerAnalyticsDetail(){
+  const el=$('customerDetailAnalytics');
+  if(el)el.classList.add('hidden');
+}
+function filterCustomerAnalytics(){
+  const q=((document.getElementById('customerAnalyticsSearch')||{}).value||'').toLowerCase().trim();
+  document.querySelectorAll('.customer-analytics-row').forEach(r=>{
+    r.style.display=!q||((r.dataset.search||'').indexOf(q)>=0)?'block':'none';
+  });
+}
+document.addEventListener('DOMContentLoaded',bindAnalyticsButton);
+window.addEventListener('pageshow',bindAnalyticsButton);
+setTimeout(bindAnalyticsButton,300);
+</script>
+<div id="masterDetailModal" class="modal hidden">
+  <div class="modal-card" style="max-width:900px">
+    <div class="section-head"><h2 id="masterDetailTitle">Details</h2><button class="btn secondary" onclick="closeMasterDetail()">✕ Close</button></div>
+    <div id="masterDetailBody"></div>
+  </div>
+</div><div id="bottomMasterNav" style="position:fixed;left:0;right:0;bottom:0;z-index:40;background:var(--card,#fff);border-top:1px solid #ddd;padding:7px 8px;display:flex;justify-content:space-around;gap:6px;box-shadow:0 -5px 18px #0001">
+<button class="btn secondary" type="button" onclick="openMasterList('products')">📦<br><small>Items</small></button>
+<button class="btn secondary" type="button" onclick="openMasterList('suppliers')">🏪<br><small>Supplier</small></button>
+<button class="btn secondary" type="button" onclick="openMasterList('customers')">👥<br><small>Customer</small></button></div>
+<style>body{padding-bottom:78px}#bottomMasterNav .btn{min-width:88px;padding:7px 12px}</style>
+<div id="analyticsModal" class="modal hidden">
+  <div class="modal-card" style="max-width:1180px;width:96%">
+    <div class="section-head">
+      <div>
+        <h2>📊 Business Analysis</h2>
+        <div class="small-muted">Complete sales, purchase, collection, due & product performance</div>
+      </div>
+      <button class="btn secondary" type="button" onclick="closeAnalytics()">✕ Close</button>
+    </div>
+
+    <div class="form-grid">
+      <div class="field">
+        <label>📅 Period</label>
+        <select id="analyticsPeriod" onchange="renderAnalytics()">
+          <option value="all">All Time</option>
+          <option value="month">This Month</option>
+          <option value="7">Last 7 Days</option>
+          <option value="30">Last 30 Days</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="analyticsKPIs" class="stats"><div class="stat"><div class="label">Sales Revenue</div><div class="value">₹0</div></div><div class="stat"><div class="label">🛒 Purchasing Cost</div><div class="value">₹0</div></div><div class="stat"><div class="label">📈 Estimated Profit</div><div class="value">₹0</div></div><div class="stat"><div class="label">👥 Customer Due</div><div class="value">₹0</div></div><div class="stat"><div class="label">🏪 Supplier Due</div><div class="value">₹0</div></div><div class="stat"><div class="label">💵 Cash Collection</div><div class="value">₹0</div></div><div class="stat"><div class="label">📱 UPI Collection</div><div class="value">₹0</div></div><div class="stat"><div class="label">⏳ Credit / Due</div><div class="value">₹0</div></div></div>
+
+    <div class="card" style="margin-top:14px">
+      <div class="section-head"><h3 style="margin:0">📌 Management Overview</h3><span class="pill">Professional Analysis</span></div>
+      <div id="analyticsManagement" class="analytics-management-grid"></div>
+    </div>
+
+    <div class="grid-2" style="margin-top:14px">
+      <div class="card"><h3>📅 Sales Trend</h3><div id="salesTrendAnalytics"></div></div>
+      <div class="card"><h3>📦 Stock Risk / Inventory</h3><div id="stockRiskAnalytics"></div></div>
+    </div>
+
+    <div class="grid-2" style="margin-top:14px">
+      <div class="card">
+        <h3>💵 Collection</h3>
+        <div id="paymentAnalyticsChart"></div>
+      </div>
+      <div class="card">
+        <h3>📈 Sales vs Purchase vs Profit</h3>
+        <div id="profitAnalyticsChart"></div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:14px">
+      <h3>📊 Products Revenue Graph</h3>
+      <div id="productRevenueGraph"></div>
+    </div>
+
+    <div class="card" style="margin-top:14px">
+      <h3>👥 Customer List + Name / Mobile Search</h3>
+      <div class="field">
+        <input id="customerAnalyticsSearch" oninput="filterCustomerAnalytics()" placeholder="🔎 Search customer name / mobile">
+      </div>
+      <div id="customerListAnalytics"></div>
+    </div>
+
+    <div class="grid-2" style="margin-top:14px">
+      <div class="card">
+        <h3>🏪 Supplier-wise Purchase / Paid / Remaining Due</h3>
+        <div id="supplierAnalyticsList"></div>
+      </div>
+      <div class="card">
+        <h3>👥 Customer Sales / Due</h3>
+        <div id="customerAnalyticsList"></div>
+      </div>
+    </div>
+
+    <div class="grid-2" style="margin-top:14px">
+      <div class="card">
+        <h3>🔥 Top Selling Items — Quantity</h3>
+        <div id="topSellingQtyList"></div>
+      </div>
+      <div class="card">
+        <h3>💰 Highest Revenue Products</h3>
+        <div id="highestRevenueList"></div>
+      </div>
+    </div>
+
+    <div id="customerDetailAnalytics" class="card hidden" style="margin-top:14px">
+      <div class="section-head">
+        <div>
+          <h3>👤 Customer Account</h3>
+          <div id="customerDetailTitle" class="small-muted"></div>
+        </div>
+        <button class="btn secondary" type="button" onclick="closeCustomerAnalyticsDetail()">✕ Close</button>
+      </div>
+      <div id="customerDetailBody"></div>
+    </div>
+
+    <div class="card" style="margin-top:14px">
+      <h3>🟢/🔴 Overall Business Status</h3>
+      <div id="businessStatusAnalytics"></div>
+    </div>
+  </div>
+</div>
+
+
+
+<script type="module">
+/* ---------- Google Account + Firebase Cloud Sync ---------- */
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
+const firebaseConfig={
+  apiKey:"AIzaSyD_NjuwXU0RKuAEfQIp44Z-lsbyK8xjj7Q",
+  authDomain:"milk-distributor.firebaseapp.com",
+  projectId:"milk-distributor",
+  storageBucket:"milk-distributor.firebasestorage.app",
+  messagingSenderId:"956516253390",
+  appId:"1:956516253390:web:49cbedb37ee204be8cda9f",
+  measurementId:"G-VRRRPD1275"
+};
+
+let rrFirebase,rrAuth,rrDb,rrUser=null,rrUnsub=null,rrWriting=false,rrSyncTimer=null;
+try{
+  rrFirebase=initializeApp(firebaseConfig);
+  rrAuth=getAuth(rrFirebase);
+  rrDb=getFirestore(rrFirebase);
+}catch(e){ console.error('Firebase init failed',e); }
+
+function cloudStatus(text,badge='Offline'){
+  const s=document.getElementById('cloudSyncStatus'),b=document.getElementById('cloudUserBadge');
+  if(s)s.textContent=text;
+  if(b){b.textContent=badge;b.className='pill '+(badge==='Online'?'':'');}
+}
+function cloudPayload(){
+  const workerList=(typeof workers==='function'?workers():[]).map(w=>({id:w.id,name:w.name,username:w.username}));
+  return {
+    app:'Milk Distributor',version:'cloud-v1',updatedAtMs:Date.now(),
+    data:rrLoadData(),
+    invoices:JSON.parse(localStorage.getItem('rr_invoices')||'[]'),
+    products:rrProducts(),
+    customers:rrContacts('rrCustomers'),
+    customerDirectory:rrContacts('rr_customers'),
+    suppliers:rrContacts('rrSuppliers'),
+    workers:workerList,
+    businessLogo:getBusinessLogo()
+  };
+}
+function applyCloudPayload(b){
+  if(!b||b.app!=='Milk Distributor')return;
+  rrWriting=true;
+  try{
+    if(b.data){data=Object.assign(rrDefaultData(),b.data);rrSaveData();}
+    if(Array.isArray(b.invoices))localStorage.setItem('rr_invoices',JSON.stringify(b.invoices));
+    if(Array.isArray(b.products))rrSaveProducts(b.products);
+    if(Array.isArray(b.customers))localStorage.setItem('rrCustomers',JSON.stringify(b.customers));
+    if(Array.isArray(b.customerDirectory))localStorage.setItem('rr_customers',JSON.stringify(b.customerDirectory));
+    if(Array.isArray(b.suppliers))localStorage.setItem('rrSuppliers',JSON.stringify(b.suppliers));
+    if(b.businessLogo)localStorage.setItem(BUSINESS_LOGO_KEY,b.businessLogo);else localStorage.removeItem(BUSINESS_LOGO_KEY);
+    if(Array.isArray(b.workers)){
+      const current=workers();
+      const merged=b.workers.map(w=>{
+        const old=current.find(x=>x.id===w.id||x.username===w.username);
+        return old?{...old,name:w.name,username:w.username}:{...w,password:''};
+      });
+      localStorage.setItem(WORKER_KEY,JSON.stringify(merged));
+    }
+    localStorage.setItem('rr_cloud_local_updated_ms',String(Number(b.updatedAtMs)||Date.now()));
+    rrSafeRender();if(typeof renderInvoices==='function')renderInvoices();if(typeof renderWorkers==='function')renderWorkers();updateBackupInfo();
+  }finally{rrWriting=false;}
+}
+async function cloudWrite(force=false){
+  if(!rrUser||!rrDb||rrWriting)return;
+  if(!force && rrSyncTimer)return;
+  if(rrSyncTimer){clearTimeout(rrSyncTimer);rrSyncTimer=null;}
+  const doWrite=async()=>{
+    try{
+      cloudStatus('Saving to Google Cloud…','Online');
+      const ref=doc(rrDb,'users',rrUser.uid,'app','milkDistributor');
+      await setDoc(ref,cloudPayload(),{merge:true});
+      localStorage.setItem('rr_cloud_local_updated_ms',String(Date.now()));
+      cloudStatus('Synced • '+(rrUser.email||'Google Account'),'Online');
+    }catch(e){console.error(e);cloudStatus('Cloud save failed: '+(e.code||'check Firebase setup'),'Offline');}
+  };
+  if(force)await doWrite();else rrSyncTimer=setTimeout(async()=>{rrSyncTimer=null;await doWrite();},700);
+}
+window.rrCloudSync=cloudWrite;
+
+async function connectGoogle(){
+  if(!rrAuth)return toast('Firebase could not initialize');
+  try{
+    const provider=new GoogleAuthProvider();
+    provider.setCustomParameters({prompt:'select_account'});
+    const isMobile=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    if(isMobile){
+      cloudStatus('Opening Google sign-in…','Offline');
+      await signInWithRedirect(rrAuth,provider);
+    }else{
+      try{
+        await signInWithPopup(rrAuth,provider);
+      }catch(popupErr){
+        console.warn('Popup sign-in failed, switching to redirect',popupErr);
+        await signInWithRedirect(rrAuth,provider);
+      }
+    }
+  }catch(e){
+    console.error('Google sign-in error',e);
+    cloudStatus('Google login failed: '+(e.code||'check Authentication / Authorized domains'),'Offline');
+    toast('Google login failed: '+(e.code||'check Firebase Authentication'));
+  }
+}
+async function disconnectGoogle(){
+  try{if(rrUnsub){rrUnsub();rrUnsub=null;}await signOut(rrAuth);toast('Google account disconnected');}catch(e){toast('Disconnect failed')}
+}
+async function syncAfterLogin(){
+  if(!rrUser||!rrDb)return;
+  const ref=doc(rrDb,'users',rrUser.uid,'app','milkDistributor');
+  try{
+    const snap=await getDoc(ref);
+    if(!snap.exists()){
+      await setDoc(ref,cloudPayload());
+      localStorage.setItem('rr_cloud_local_updated_ms',String(Date.now()));
+    }else{
+      const remote=snap.data(), remoteMs=Number(remote.updatedAtMs)||0, localMs=Number(localStorage.getItem('rr_cloud_local_updated_ms'))||0;
+      if(!localMs || remoteMs>=localMs){applyCloudPayload(remote);}
+      else{await setDoc(ref,cloudPayload(),{merge:true});localStorage.setItem('rr_cloud_local_updated_ms',String(Date.now()));}
+    }
+    if(rrUnsub)rrUnsub();
+    rrUnsub=onSnapshot(ref,s=>{
+      if(!s.exists()||rrWriting)return;
+      const remote=s.data(),remoteMs=Number(remote.updatedAtMs)||0,localMs=Number(localStorage.getItem('rr_cloud_local_updated_ms'))||0;
+      if(remoteMs>localMs)applyCloudPayload(remote);
+    },e=>console.error('Cloud listener',e));
+    cloudStatus('Synced • '+(rrUser.email||'Google Account'),'Online');
+  }catch(e){console.error('Initial cloud sync',e);cloudStatus('Cloud sync failed: '+(e.code||'check Firestore rules'),'Offline');}
+}
+
+if(rrAuth){
+  getRedirectResult(rrAuth).catch(e=>{
+    if(e && e.code){
+      console.error('Google redirect result',e);
+      cloudStatus('Google login failed: '+e.code,'Offline');
+      toast('Google login failed: '+e.code);
+    }
+  });
+  onAuthStateChanged(rrAuth,u=>{
+    rrUser=u||null;
+    const connect=document.getElementById('googleConnectBtn'),disc=document.getElementById('googleDisconnectBtn'),sync=document.getElementById('cloudSyncNowBtn');
+    if(u){
+      if(connect)connect.classList.add('hidden');if(disc)disc.classList.remove('hidden');if(sync)sync.disabled=false;
+      cloudStatus('Connecting cloud… '+(u.email||''),'Online');syncAfterLogin();
+    }else{
+      if(rrUnsub){rrUnsub();rrUnsub=null;}if(connect)connect.classList.remove('hidden');if(disc)disc.classList.add('hidden');if(sync)sync.disabled=true;
+      cloudStatus('Not connected','Offline');
+    }
+  });
+}
+
+document.addEventListener('DOMContentLoaded',()=>{renderLogoSettings();});
+document.addEventListener('DOMContentLoaded',()=>{
+  document.getElementById('googleConnectBtn')?.addEventListener('click',connectGoogle);
+  document.getElementById('googleDisconnectBtn')?.addEventListener('click',disconnectGoogle);
+  document.getElementById('cloudSyncNowBtn')?.addEventListener('click',()=>cloudWrite(true));
+  if(document.getElementById('cloudSyncNowBtn'))document.getElementById('cloudSyncNowBtn').disabled=!rrUser;
+});
+</script>
+</body></html>
